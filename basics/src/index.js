@@ -3,14 +3,12 @@ import { GraphQLServer } from 'graphql-yoga';
 // Type definitions (Application schema)
 // This is done in the graphql language
 // Similar to db models
-// ! means that it will always return the particular type stated and never a null.
+// ! means that it will always return the particular type stated and not a null.
 // Scalar Types: ID, String, Float, Int, Boolean
 const typeDefs = `
     type Query {
-        add(
-            a: Float!,
-            b: Float!
-        ): Float!
+        grades: [Int!]!
+        add(numbers: [Float!]!): Float!
         greeting(
             name: String,
             position: String
@@ -39,8 +37,17 @@ const typeDefs = `
 // Resolvers have 4 arguments; parent, args, ctx, info
 const resolvers = {
     Query: {
-        add(parent, {a, b}) {
-            return a + b;
+        grades(parent, args, ctx, info) {
+            return [99, 80, 93];
+        },
+        add(parent, args, ctx, info) {
+            if (args.numbers.length === 0) {
+                return 0;
+            }
+
+            return args.numbers.reduce( (accumulator, currentValue) => {
+                return accumulator + currentValue;
+            });
         },
         greeting(parent, args, ctx, info) {
             if (args.name && args.position) {
