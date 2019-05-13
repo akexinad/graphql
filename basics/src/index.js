@@ -4,36 +4,65 @@ import { GraphQLServer } from 'graphql-yoga';
 // This is done in the graphql language
 // Similar to db models
 // ! means that it will always return the particular type stated and never a null.
-// Type: String, Float, Int, Boolean
+// Scalar Types: ID, String, Float, Int, Boolean
 const typeDefs = `
     type Query {
+        add(
+            a: Float!,
+            b: Float!
+        ): Float!
+        greeting(
+            name: String,
+            position: String
+        ): String!
+        me: User!
+        post: Post!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
+
+    type Post {
+        id: ID!
         title: String!
-        price: Float!
-        releaseYear: Int
-        rating: Float
-        inStock: Boolean!
+        body: String!
+        published: Boolean!
     }
 `
 
 // Resolvers
 // This resolves the graphql queries in the language in question, here it is JS.
+// Resolvers have 4 arguments; parent, args, ctx, info
 const resolvers = {
-
     Query: {
-        title() {
-            return 'Meditations';
+        add(parent, {a, b}) {
+            return a + b;
         },
-        price() {
-            return '34.89';
+        greeting(parent, args, ctx, info) {
+            if (args.name && args.position) {
+                return `Hello ${ args.name }. Do you enjoy being a ${ args.position }?`
+            }
+
+            return 'Hello!'
         },
-        releaseYear() {
-            return 1990;
+        me() {
+            return {
+                id: '123asd',
+                name: 'Fellini',
+                email: 'qa@ws.com'
+            };
         },
-        rating() {
-            return null;
-        },
-        inStock() {
-            return true;
+        post() {
+            return {
+                id: '123qwe',
+                title: 'ricotta',
+                body: 'ligi likes ricotta',
+                published: true
+            };
         }
     }
 };
