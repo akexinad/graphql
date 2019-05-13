@@ -1,20 +1,48 @@
 import { GraphQLServer } from 'graphql-yoga';
 
+// Demo User data
+const users = [{
+    id: "1",
+    name: "fellini",
+    email: "yes@no.com",
+    age: 22,
+}, {
+    id: "2",
+    name: "benigni",
+    email: "wefvcrw@iwh.com",
+    age: 33,
+}, {
+    id: "3",
+    name: "pasolini",
+    email: "vrw@erwf.com",
+}]
+
+const posts = [{
+    id: "1",
+    title: "hello world",
+    body: "my first post",
+    published: true
+}, {
+    id: "2",
+    title: "GoT sucks",
+    body: "what a shame",
+    published: true
+}, {
+    id: "3",
+    title: "Hamiltion greatest F1 driver",
+    body: "ONE of the greatest",
+    published: false
+}]
+
 // Type definitions (Application schema)
 // This is done in the graphql language
-// Similar to db models
 // ! means that it will always return the particular type stated and not a null.
 // Scalar Types: ID, String, Float, Int, Boolean
 const typeDefs = `
     type Query {
-        grades: [Int!]!
-        add(numbers: [Float!]!): Float!
-        greeting(
-            name: String,
-            position: String
-        ): String!
+        users(query: String): [User!]!
         me: User!
-        post: Post!
+        posts(query: String): [Post]!
     }
 
     type User {
@@ -37,24 +65,14 @@ const typeDefs = `
 // Resolvers have 4 arguments; parent, args, ctx, info
 const resolvers = {
     Query: {
-        grades(parent, args, ctx, info) {
-            return [99, 80, 93];
-        },
-        add(parent, args, ctx, info) {
-            if (args.numbers.length === 0) {
-                return 0;
+        users(parent, args, ctx, info) {
+            if (!args.query) {
+                return users;
             }
 
-            return args.numbers.reduce( (accumulator, currentValue) => {
-                return accumulator + currentValue;
-            });
-        },
-        greeting(parent, args, ctx, info) {
-            if (args.name && args.position) {
-                return `Hello ${ args.name }. Do you enjoy being a ${ args.position }?`
-            }
-
-            return 'Hello!'
+            return users.filter( (user) => {
+                return user.name.toLowerCase().includes(args.query.toLowerCase());
+            })
         },
         me() {
             return {
@@ -63,13 +81,14 @@ const resolvers = {
                 email: 'qa@ws.com'
             };
         },
-        post() {
-            return {
-                id: '123qwe',
-                title: 'ricotta',
-                body: 'ligi likes ricotta',
-                published: true
-            };
+        posts(parent, args, ctx, info) {
+            if (!args.query) {
+                return posts;
+            }
+
+            return posts.filter( ({ title, body }) => {
+                return title.toLowerCase().includes(args.query.toLowerCase()) || body.toLowerCase().includes(args.query.toLowerCase())
+            })
         }
     }
 };
