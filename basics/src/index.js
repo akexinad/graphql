@@ -18,20 +18,23 @@ const users = [{
 }]
 
 const posts = [{
-    id: "1",
+    id: "4",
     title: "hello world",
     body: "my first post",
-    published: true
+    published: true,
+    author: "1"
 }, {
-    id: "2",
+    id: "5",
     title: "GoT sucks",
     body: "what a shame",
-    published: true
+    published: true,
+    author: "2"
 }, {
-    id: "3",
+    id: "6",
     title: "Hamiltion greatest F1 driver",
     body: "ONE of the greatest",
-    published: false
+    published: false,
+    author: "3"
 }]
 
 // Type definitions (Application schema)
@@ -50,6 +53,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
     }
 
     type Post {
@@ -57,6 +61,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean!
+        author: User!
     }
 `
 
@@ -89,6 +94,17 @@ const resolvers = {
             return posts.filter( ({ title, body }) => {
                 return title.toLowerCase().includes(args.query.toLowerCase()) || body.toLowerCase().includes(args.query.toLowerCase())
             })
+        }
+    },
+    // Relationships
+    Post: {
+        author(parent, args, ctx, info) {
+            return users.find( user => user.id === parent.author);
+        }
+    },
+    User: {
+        posts(parent, args, ctx, info) {
+            return posts.filter( post => post.author === parent.id);
         }
     }
 };
