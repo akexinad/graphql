@@ -22,19 +22,41 @@ const posts = [{
     title: "hello world",
     body: "my first post",
     published: true,
-    author: "1"
+    author: "1",
 }, {
     id: "5",
     title: "GoT sucks",
     body: "what a shame",
     published: true,
-    author: "2"
+    author: "2",
 }, {
     id: "6",
     title: "Hamiltion greatest F1 driver",
     body: "ONE of the greatest",
     published: false,
-    author: "3"
+    author: "3",
+}]
+
+const comments = [{
+    id: "7",
+    text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod fugit officiis similique veritatis. Eveniet provident necessitatibus a, illo libero, porro earum inventore eum tenetur officiis, iste facilis, et nobis excepturi.",
+    author: "1",
+    post: "4"
+}, {
+    id: "8",
+    text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi perferendis dolorem voluptatibus, quaerat id ducimus eaque maxime quia eius laudantium quibusdam tempore obcaecati doloribus ea dignissimos eos earum, voluptates dolor!",
+    author: "2",
+    post: "4"
+}, {
+    id: "9",
+    text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui omnis, debitis tenetur consequuntur doloribus, eligendi, atque dignissimos unde vero excepturi reiciendis, numquam in maxime temporibus ratione nam corporis. Consequatur, aliquid.",
+    author: "3",
+    post: "5"
+}, {
+    id: "10",
+    text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit quos inventore laudantium veritatis velit porro aut vel, doloribus animi itaque necessitatibus ipsa nisi, odit earum incidunt, a vitae neque quidem!",
+    author: "3",
+    post: "6"
 }]
 
 // Type definitions (Application schema)
@@ -44,8 +66,9 @@ const posts = [{
 const typeDefs = `
     type Query {
         users(query: String): [User!]!
+        posts(query: String): [Post!]!
+        comments(query: String): [Comment!]!
         me: User!
-        posts(query: String): [Post]!
     }
 
     type User {
@@ -54,6 +77,7 @@ const typeDefs = `
         email: String!
         age: Int
         posts: [Post!]!
+        comments: [Comment!]!
     }
 
     type Post {
@@ -62,6 +86,14 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment!]!
+    }
+
+    type Comment {
+        id: ID!
+        text: String!
+        author: User!
+        post: Post!
     }
 `
 
@@ -94,17 +126,38 @@ const resolvers = {
             return posts.filter( ({ title, body }) => {
                 return title.toLowerCase().includes(args.query.toLowerCase()) || body.toLowerCase().includes(args.query.toLowerCase())
             })
+        },
+        comments(parent, args, ctx, info) {
+            if (!args.query) {
+                return comments;
+            }
+
+            return comments.filter( comment => comment.text.toLowerCase().includes(args.query.toLowerCase()) );
         }
     },
     // Relationships
     Post: {
         author(parent, args, ctx, info) {
-            return users.find( user => user.id === parent.author);
+            return users.find( user => user.id === parent.author );
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter( comment => comment.post === parent.id )
         }
     },
     User: {
         posts(parent, args, ctx, info) {
-            return posts.filter( post => post.author === parent.id);
+            return posts.filter( post => post.author === parent.id );
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter( comment => comment.author === parent.id );
+        }
+    },
+    Comment: {
+        author(parent, args, ctx, info) {
+            return users.find( user => user.id === parent.author );
+        },
+        post(parent, args, ctx, info) {
+            return posts.find( post => post.id === parent.post );
         }
     }
 };
