@@ -173,9 +173,13 @@ const resolvers = {
             // This is where the type is actually created by storing the argument values inside of a new object
             const user = {
                 id: uuidv4(),
+                // We can now use the spread operator which was imported into our .babelrc file instead of individually calling args to copy our data...
+                /*
                 name: args.name,
                 email: args.email,
                 age: args.age
+                */
+                ...args
             };
 
             // The object is then 'saved' by pushing it in the users array created above.
@@ -194,10 +198,13 @@ const resolvers = {
 
             const post = {
                 id: uuidv4(),
+                /*
                 title: args.title,
                 body: args.body,
                 published: args.published,
                 author: args.author
+                */
+                ...args
             };
 
             posts.push(post);
@@ -217,9 +224,12 @@ const resolvers = {
 
             const comment = {
                 id: uuidv4(),
+                /*
                 text: args.text,
                 post: args.post,
                 author: args.author
+                */
+                ...args
             };
 
             comments.push(comment);
