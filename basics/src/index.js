@@ -25,7 +25,7 @@ const server = new GraphQLServer({
         User,
         Post,
         Comment
-    }
+    },
     // context refers to the ctx resolver argument and we pass to it the db file which houses our demo or real production data.
     // Now ctx stores the db object.
     context: {
