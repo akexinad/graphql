@@ -3,45 +3,69 @@
 # ! means that it will always return data and are non-nullible.
 # Scalar Types: ID, String, Float, Int, Boolean
 type Query {
-    users(query: String): [User!]!
+        users(query: String): [User!]!
     posts(query: String): [Post!]!
     comments(query: String): [Comment!]!
     me: User!
 }
 
-# MUTATION TYPES
+# MUTATIONS is where your basic CRUD operations happens
 
 type Mutation {
+    # USER
     createUser(
         userData: CreateUserInput
-    ): User!
+        ): User!
+
+    updateUser(
+        id: ID!
+        userData: UpdateUserInput
+        ): User!
 
     deleteUser(
         id: ID!
-    ): User!
+        ): User!
 
+    # POST
     createPost(
         postData: CreatePostInput
-    ): Post!
+        ): Post!
+
+    updatePost(
+        id: ID!
+        postData: UpdatePostInput
+        ): Post!
 
     deletePost(
         id: ID!
-    ): Post!
+        ): Post!
 
+    # COMMENT
     createComment(
         commentData: CreateCommentInput
-    ): Comment!
+        ): Comment!
+
+    updateComment(
+        id: ID!
+        commentData: UpdateCommentInput
+        ): Comment!
 
     deleteComment(
         id: ID!
-    ): Comment!
+        ): Comment!
 }
 
 # INPUTS FOR CREATING DATA
 
 input CreateUserInput {
-    name: String!,
-    email: String!,
+    name: String!
+    email: String!
+    age: Int
+}
+
+input UpdateUserInput {
+    name: String
+    email: String
     age: Int
 }
 
@@ -52,10 +76,20 @@ input CreatePostInput {
     author: ID!
 }
 
+input UpdatePostInput {
+    title: String
+    body: String
+    published: Boolean
+}
+
 input CreateCommentInput {
     text: String!
     author: ID!
     post: ID!
+}
+
+input UpdateCommentInput {
+    text: String
 }
 
 # DATA TYPES

@@ -28,6 +28,39 @@ const Mutation = {
         return user;
     },
 
+    updateUser(parent, args, { db }, info) {
+        // destructuring args
+        const { id, userData } = args;
+
+        const user = db.users.find( user => user.id === id );
+
+        // checking if there is actually a user.
+        if (!user) {
+            throw new Error('404 - User not found!');
+        }
+
+        // Ensuring that the correct types are passed into the database.
+        if (typeof userData.email === 'string') {
+            const emailTaken = db.users.some( user => user.email === userData.email );
+
+            if (emailTaken) {
+                throw new Error('400 - Email Taken!');
+            }
+
+            user.email = userData.email;
+        }
+
+        if (typeof userData.name === 'string') {
+            user.name = userData.name;
+        }
+
+        if (typeof userData.age !== 'undefined') {
+            user.age = userData.age;
+        }
+
+        return user;
+    },
+
     deleteUser(parent, args, { db }, info) {
         const userIndex = db.users.findIndex( user => user.id === args.id );
 
@@ -83,6 +116,29 @@ const Mutation = {
         return post;
     },
 
+    updatePost(parent, args, { db }, info) {
+        const { id, postData } = args;
+        const post = db.posts.find( post => post.id === id );
+
+        if (!post) {
+            throw new Error('404 - Post not found!');
+        }
+
+        if (typeof postData.title === 'string') {
+            post.title = postData.title;
+        }
+
+        if (typeof postData.body === 'string') {
+            post.body = postData.body;
+        }
+
+        if (typeof postData.published === 'boolean') {
+            post.published = postData.published;
+        }
+
+        return post;
+    },
+
     deletePost(parent, args, { db }, info) {
         const postIndex = db.posts.findIndex( post => post.id === args.id );
 
@@ -118,6 +174,21 @@ const Mutation = {
         };
 
         db.comments.push(comment);
+
+        return comment;
+    },
+
+    updateComment(parent, args, { db }, info) {
+        const { id, commentData } = args;
+        const comment = db.comments.find( comment => comment.id === id );
+
+        if (!comment) {
+            throw new Error('404 - Comment not found!');
+        }
+
+        if (typeof commentData.text === 'string') {
+            comment.text = commentData.text;
+        }
 
         return comment;
     },
