@@ -2,7 +2,7 @@ import { GraphQLServer } from 'graphql-yoga';
 import uuidv4 from 'uuid/v4';
 
 // Demo User data
-const users = [{
+let users = [{
     id: "1",
     name: "fellini",
     email: "yes@no.com",
@@ -18,7 +18,7 @@ const users = [{
     email: "vrw@erwf.com",
 }]
 
-const posts = [{
+let posts = [{
     id: "4",
     title: "hello world",
     body: "my first post",
@@ -38,7 +38,7 @@ const posts = [{
     author: "3",
 }]
 
-const comments = [{
+let comments = [{
     id: "7",
     text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod fugit officiis similique veritatis. Eveniet provident necessitatibus a, illo libero, porro earum inventore eum tenetur officiis, iste facilis, et nobis excepturi.",
     author: "1",
@@ -77,12 +77,24 @@ const typeDefs = `
             userData: CreateUserInput
         ): User!
 
+        deleteUser(
+            id: ID!
+        ): User!
+
         createPost(
             postData: CreatePostInput
         ): Post!
 
+        deletePost(
+            id: ID!
+        ): Post!
+
         createComment(
             commentData: CreateCommentInput
+        ): Comment!
+
+        deleteComment(
+            id: ID!
         ): Comment!
     }
 
@@ -201,6 +213,38 @@ const resolvers = {
             return user;
         },
 
+        deleteUser(parent, args, ctx, info) {
+            const userIndex = users.findIndex( user => user.id === args.id );
+
+            if (userIndex === -1) {
+                throw new Error(`404 - User not found!`)
+            }
+
+            const deletedUsers = users.splice(userIndex, 1);
+
+            // If we delete the user, we need to also delete the users posts and comments
+            posts = posts.filter( post => {
+
+                // this expression will return the posts that belong to the deleted user and storing them in match.
+                const match = post.author === args.id;
+
+                // now we can delete the comments that belong to said post.
+                // Return the comments that DO NOT BELONG to the post getting deleted.
+                if (match) {
+                    comments = comments.filter( comment => comment.post !== post.id );
+                }
+
+                // Now we can return all posts that DO NOT BELONG to the user being deleted.
+                return !match;
+            });
+
+            // FINALLY, we can now delete all of the deleted user's comments.
+            // We return comments that DO NOT BELING to the deleted User.
+            comments = comments.filter( comment => comment.author !== args.id );
+
+            return deletedUsers[0];
+        },
+
         createPost(parent, args, ctx, info) {
             const userExists = users.some( user => user.id === args.postData.author );
 
@@ -222,6 +266,20 @@ const resolvers = {
             posts.push(post);
 
             return post;
+        },
+
+        deletePost(parent, args, ctx, info) {
+            const postIndex = posts.findIndex( post => post.id === args.id );
+
+            if (postIndex === -1) {
+                throw new Error('404 - Post not found!');
+            }
+
+            const deletedPosts = posts.splice(postIndex, 1);
+
+            comments = comments.filter( comment => comment.post !== args.id );
+
+            return deletedPosts[0];
         },
 
         createComment(parent, args, ctx, info) {
@@ -247,6 +305,18 @@ const resolvers = {
             comments.push(comment);
 
             return comment;
+        },
+
+        deleteComment(parent, args, ctx, info) {
+            const commentIndex = comments.findIndex( comment => comment.id === args.id );
+
+            if (commentIndex === -1) {
+                throw new Error('404 - Comment not found!')
+            }
+
+            const deletedComments = comments.splice(commentIndex, 1);
+
+            return deletedComments[0];
         }
     },
     // Relationships
