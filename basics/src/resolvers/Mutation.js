@@ -230,13 +230,16 @@ const Mutation = {
         db.comments.push(comment);
 
         pubsub.publish(`comment of postId: ${ args.commentData.post }`, {
-            comment
+            comment: {
+                mutation: 'CREATED',
+                data: comment
+            }
         });
 
         return comment;
     },
 
-    updateComment(parent, args, { db }, info) {
+    updateComment(parent, args, { db, pubsub }, info) {
         const { id, commentData } = args;
         const comment = db.comments.find( comment => comment.id === id );
 
@@ -248,19 +251,34 @@ const Mutation = {
             comment.text = commentData.text;
         }
 
+        pubsub.publish(`comment of postId: ${ comment.post }`, {
+            comment: {
+                mutation: 'UPDATED',
+                data: comment
+            }
+        });
+
         return comment;
     },
 
-    deleteComment(parent, args, { db }, info) {
+    deleteComment(parent, args, { db, pubsub }, info) {
         const commentIndex = db.comments.findIndex( comment => comment.id === args.id );
 
         if (commentIndex === -1) {
             throw new Error('404 - Comment not found!')
         }
 
-        const deletedComments = db.comments.splice(commentIndex, 1);
+        // Desctructuring the only item from the list
+        const [ deletedComment ] = db.comments.splice(commentIndex, 1);
 
-        return deletedComments[0];
+        pubsub.publish(`comment of postId: ${ deletedComment.post }`, {
+            comment: {
+                mutation: 'DELETED',
+                data: deletedComment
+            }
+        });
+
+        return deletedComment;
     }
 };
 

@@ -126,7 +126,7 @@ type Subscription {
 
     comment(
         postId: ID!
-        ): Comment!
+        ): CommentSubscriptionPayLoad!
 
     post: PostSubscriptionPayload!
 }
@@ -136,4 +136,9 @@ type Subscription {
 type PostSubscriptionPayload {
     mutation: String!
     data: Post!
+}
+
+type CommentSubscriptionPayLoad {
+    mutation: String!
+    data: Comment!
 }
