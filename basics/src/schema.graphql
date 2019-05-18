@@ -1,7 +1,8 @@
-# Type definitions (Application schema)
-# This is done in the graphql language
+# Type definitions (Application schema).
+# This is done in the graphql language.
 # ! means that it will always return data and are non-nullible.
-# Scalar Types: ID, String, Float, Int, Boolean
+# Scalar Types: ID, String, Float, Int, Boolean.
+
 type Query {
         users(query: String): [User!]!
     posts(query: String): [Post!]!
@@ -131,14 +132,26 @@ type Subscription {
     post: PostSubscriptionPayload!
 }
 
+# ENUM
+# 1. A special type that defines a set of constraints.
+# 2. This type can be used as the type for a field (similar to scalar and custom object types).
+# 3. Values for the field must be one of the constants for the type.
+# Emums are really good for catching typos.
+
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+}
+
 # SUBSCRIPTION TYPES FOR WHEN DATA IS UPDATED
 
 type PostSubscriptionPayload {
-    mutation: String!
+    mutation: MutationType!
     data: Post!
 }
 
 type CommentSubscriptionPayLoad {
-    mutation: String!
+    mutation: MutationType!
     data: Comment!
 }
