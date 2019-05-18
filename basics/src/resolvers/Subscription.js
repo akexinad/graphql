@@ -1,6 +1,7 @@
 // See https://github.com/prisma/graphql-yoga for info and documentation
 
 const Subscription = {
+    // NOTE: COUNT IS ONLY A DEMO SUBSRIPTION!!!
     // count is our subscription type, and we pass the subscribe function to it.
     count: {
         subscribe(parent, args, { pubsub }, info) {
@@ -26,15 +27,24 @@ const Subscription = {
 
     comment: {
         subscribe(parent, { postId }, { db, pubsub }, info) {
+
+            // We need to find the post to which the comment belongs.
             const post = db.posts.find( post => post.id === postId && post.published );
 
             if (!post) {
                 throw new Error('404 - Post not found!');
             }
 
-            return pubsub.asyncIterator(`comment for postId: ${ postId }`);
+            return pubsub.asyncIterator(`comment of postId: ${ postId }`);
 
             // comments are created in the Mutation file, so this is where pubsub.publish() would best be called.
+        }
+    },
+
+    post: {
+        subscribe(parent, args, { pubsub }, info) {
+            return pubsub.asyncIterator('post');
+            // Again, its best to invoke .publish() where the post actually gets created.
         }
     }
 };
