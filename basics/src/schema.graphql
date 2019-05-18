@@ -59,6 +59,9 @@ type Mutation {
 
 type Subscription {
     count: Int!
+    comment(
+        postId: ID!
+        ): Comment!
 }
 
 # INPUTS FOR CREATING AND UPDATING DATA
