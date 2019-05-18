@@ -55,18 +55,6 @@ type Mutation {
         ): Comment!
 }
 
-# TO SEE LIVE DATA UPDATES. Subscription will be using web sockets.
-
-type Subscription {
-    count: Int!
-
-    comment(
-        postId: ID!
-        ): Comment!
-
-    post: Post!
-}
-
 # INPUTS FOR CREATING AND UPDATING DATA
 
 input CreateUserInput {
@@ -129,4 +117,23 @@ type Comment {
     text: String!
     author: User!
     post: Post!
+}
+
+# TO SEE LIVE DATA UPDATES. Subscription will be using web sockets.
+
+type Subscription {
+    count: Int!
+
+    comment(
+        postId: ID!
+        ): Comment!
+
+    post: PostSubscriptionPayload!
+}
+
+# SUBSCRIPTION TYPES FOR WHEN DATA IS UPDATED
+
+type PostSubscriptionPayload {
+    mutation: String!
+    data: Post!
 }

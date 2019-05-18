@@ -115,15 +115,25 @@ const Mutation = {
 
         // Check to see if the post.published is set to true.
         if (args.postData.published) {
-            pubsub.publish('post', { post });
+            pubsub.publish('post', {
+                post: {
+                    // This object passed into post corresponds to the PostSubscriptionPayload type.
+                    // Instead of just passing the post data, we pass the post and the kind of mutation that occured.
+                    mutation: 'CREATED',
+                    data: post
+                }
+            });
         }
 
         return post;
     },
 
-    updatePost(parent, args, { db }, info) {
+    updatePost(parent, args, { db, pubsub }, info) {
         const { id, postData } = args;
         const post = db.posts.find( post => post.id === id );
+        // We need to compare the original post and the updated posts
+        // In order to know when to fire off subscription events.
+        const originalPost = { ...post };
 
         if (!post) {
             throw new Error('404 - Post not found!');
@@ -139,23 +149,62 @@ const Mutation = {
 
         if (typeof postData.published === 'boolean') {
             post.published = postData.published;
+
+            if (originalPost.published && !post.published) {
+                // if the post has been updated to published: false
+                pubsub.publish('post', {
+                    post: {
+                        mutation: 'DELETED',
+                        data: originalPost
+                    }
+                })
+            } else if (!originalPost.published && post.published) {
+                // if the post has been updated to published: true
+                pubsub.publish('post', {
+                    post: {
+                        mutation: 'CREATED',
+                        data: post
+                    }
+                })
+
+            }
+        } else if (post.published) {
+            // if the post has been edited and published is true, send off an event and notify the client.
+            pubsub.publish('post', {
+                post: {
+                    mutation: 'UPDATED',
+                    data: post
+                }
+            })
         }
 
         return post;
     },
 
-    deletePost(parent, args, { db }, info) {
+    deletePost(parent, args, { db, pubsub }, info) {
         const postIndex = db.posts.findIndex( post => post.id === args.id );
 
         if (postIndex === -1) {
             throw new Error('404 - Post not found!');
         }
 
-        const deletedPosts = db.posts.splice(postIndex, 1);
+        // Array destructuring
+        // const deletedPosts = db.posts.splice(postIndex, 1);
+        // Becomes...
+        const [ deletedPost ] = db.posts.splice(postIndex, 1);
 
         db.comments = db.comments.filter( comment => comment.post !== args.id );
 
-        return deletedPosts[0];
+        if (deletedPost.published) {
+            pubsub.publish('post', {
+                post: {
+                    mutation: 'DELETED',
+                    data: deletedPost
+                }
+            })
+        }
+
+        return deletedPost
     },
 
     createComment(parent, args, { db, pubsub }, info) {
