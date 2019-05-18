@@ -9,7 +9,7 @@ type Query {
     me: User!
 }
 
-# MUTATIONS is where your basic CRUD operations happens
+# MUTATIONS is where your basic CRUD operations happen
 
 type Mutation {
     # USER
@@ -55,7 +55,13 @@ type Mutation {
         ): Comment!
 }
 
-# INPUTS FOR CREATING DATA
+# TO SEE LIVE DATA UPDATES. Subscription will be using web sockets.
+
+type Subscription {
+    count: Int!
+}
+
+# INPUTS FOR CREATING AND UPDATING DATA
 
 input CreateUserInput {
     name: String!

@@ -1,4 +1,4 @@
-import { GraphQLServer } from 'graphql-yoga';
+import { GraphQLServer, PubSub } from 'graphql-yoga';
 
 import db from './db.js';
 
@@ -11,9 +11,12 @@ import db from './db.js';
     // users in the first instance refers to the custom type of author.
 import Query from './resolvers/Query.js';
 import Mutation from './resolvers/Mutation.js';
+import Subscription from './resolvers/Subscription.js';
 import User from './resolvers/User.js';
 import Post from './resolvers/Post.js';
 import Comment from './resolvers/Comment.js';
+
+const pubsub = new PubSub();
 
 const server = new GraphQLServer({
     // typeDefs are always referenced from the root directory.
@@ -22,6 +25,7 @@ const server = new GraphQLServer({
     resolvers: {
         Query,
         Mutation,
+        Subscription,
         User,
         Post,
         Comment
@@ -29,7 +33,8 @@ const server = new GraphQLServer({
     // context refers to the ctx resolver argument and we pass to it the db file which houses our demo or real production data.
     // Now ctx stores the db object.
     context: {
-        db
+        db,
+        pubsub
     }
 });
 
