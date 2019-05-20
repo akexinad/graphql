@@ -1,3 +1,4 @@
+# NOTE: The GraphQL API replaces your usual REST API [i.e. the toolset that performs your CRUD operations connecting the client and the server.]
 # Type definitions (Application schema).
 # This is done in the graphql language.
 # ! means that it will always return data and are non-nullible.
