@@ -5,7 +5,7 @@
 # Scalar Types: ID, String, Float, Int, Boolean.
 
 type Query {
-        users(query: String): [User!]!
+    users(query: String): [User!]!
     posts(query: String): [Post!]!
     comments(query: String): [Comment!]!
     me: User!
