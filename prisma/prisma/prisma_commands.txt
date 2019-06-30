@@ -1,0 +1,8 @@
+- once you have completed the set up, make sure that a docker terminal is open, and in your bash type:
+
+> docker-compose up -d
+
+- when this has completed successfully you can execute:
+
+
+NOTE: In windows. The endpoint needs to be the IP address provided to you by the docker terminal plus the port number. Check the prisma.yml file.
