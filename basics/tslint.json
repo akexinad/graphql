@@ -13,7 +13,10 @@
             "options": [120]
         },
         "semicolon": [true, "always"],
-        "typedef": [true, "call-signature", "parameter", "member-variable-declaration"]
+        "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+        "quotemark": [true, "single"],
+        "trailing-comma": [false],
+        "no-console": [false]
     },
     "rulesDirectory": [],
     "linterOptions": {

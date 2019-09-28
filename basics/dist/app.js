@@ -13,11 +13,12 @@ class App {
         const router = express_1.default.Router();
         router.get('/', (req, res) => {
             res.json({
-                message: 'Hello World!'
+                message: 'Hello There!'
             });
         });
         this.express.use('/', router);
     }
 }
 exports.default = new App().express;
+let x;
 //# sourceMappingURL=app.js.map
