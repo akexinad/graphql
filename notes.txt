@@ -1,0 +1,10 @@
+
+WHAT IS A GRAPH?
+================
+
+- A graph is essentially a visual representation of our models and their relationships.
+
+- TYPES
+    - Types are your models/entities.
+    - A type has fields that can be tracked.
+
