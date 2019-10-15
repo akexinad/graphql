@@ -3,21 +3,36 @@ import { GraphQLServer } from 'graphql-yoga';
 // To build the API, we need 2 things:
     // 1. TYPE DEFINITIONS.
         // This is the APPLICATION SCHEMA, the entities/model that we will be using.
-    // 2. RESOLVERS IN THE NATIVE LANGUAGE.
+    // 2. RESOLVERS ARE IN THE NATIVE LANGUAGE.
 
     
 const typeDefs = `
     type Query {
-        id: ID!
-        name: String!
-        age: Int!
-        isEngineer: Boolean!
-        gpa: Float
+        title: String!
+        price: Float!
+        releaseYear: Int
+        rating: Float
+        inStock: Boolean!
     }
 `
 
 const resolvers = {
     Query: {
+        title() {
+            return 'If this is a man';
+        },
+        price() {
+            return 44.99;
+        },
+        releaseYear() {
+            return null;
+        },
+        rating() {
+            return 4.9;
+        },
+        inStock() {
+            return true;
+        }
     }
 }
 
