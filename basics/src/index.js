@@ -1,7 +1,31 @@
-import { message } from './myModule';
-import subtract, { add } from './math';
+import { GraphQLServer } from 'graphql-yoga';
 
-console.log(message);
+// To build the API, we need 2 things:
+    // 1. TYPE DEFINITIONS.
+        // This is the APPLICATION SCHEMA, the entities/model that we will be using.
+    // 2. RESOLVERS IN THE NATIVE LANGUAGE.
 
-console.log(subtract(3, 2));
-console.log(add(2, 2));
+    
+const typeDefs = `
+    type Query {
+        id: ID!
+        name: String!
+        age: Int!
+        isEngineer: Boolean!
+        gpa: Float
+    }
+`
+
+const resolvers = {
+    Query: {
+    }
+}
+
+const server = new GraphQLServer({
+    typeDefs,
+    resolvers
+});
+
+server.start(() => {
+    console.log('Server is running on http://localhost:4000');
+});

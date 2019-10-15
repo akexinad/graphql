@@ -8,3 +8,39 @@ WHAT IS A GRAPH?
     - Types are your models/entities.
     - A type has fields that can be tracked.
 
+
+
+
+SETTING UP BABEL
+================
+
+- Babel is a JS compiler which allows us to use the latest JS code from ES6.
+- Remember when you create a react app? Babel is already installed, but because we're just making a simple node express app, we need to physically install
+    babel ourselves so when we use ES6 syntax, babel will compile down to ES5 which is what internet browsers understand.
+
+
+
+
+CREATING A GRAPHQL API
+======================
+
+- An important point to note is that graphql is only a specification, not an implementation.
+- There the implementation is entirely up to the developer himself.
+- Another example of the distinction between between specification and implementation is ECMASCRIPT.
+    - ECMASCRIPT is the JS specification. Browser engines like V8 and SpiderMonkey in Chrome and Firefox are
+        implementations of those specs.
+- GRAPHQL-YOGA is one of these implementations. This implementation provides one of the most advanced feature sets.
+
+
+
+
+GRAPHQL SCALAR TYPES
+====================
+
+- A scalar type is just a type that stores a SINGLE value.
+
+- String
+- Boolean
+- Int
+- Float
+- Id
