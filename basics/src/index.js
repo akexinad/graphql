@@ -8,6 +8,8 @@ import { GraphQLServer } from 'graphql-yoga';
     
 const typeDefs = `
     type Query {
+        add(a: Int!, b: Int!): Int!
+        greeting(name: String, position: String): String!
         me: User!
         myPost: Post!
     }
@@ -30,6 +32,15 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
+        add(parent, { a, b }, ctx, info) {
+            return a + b;
+        },
+        // There are 4 arguments that get passed to all resolver functions
+        greeting(parent, args, ctx, info) {
+            console.log(args);
+            
+            return args.name ? `Hello ${ args.name }, you are my favourite ${ args.position }` : 'Hello!'
+        },
         me() {
             return {
                 id: '123098',
