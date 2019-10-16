@@ -44,3 +44,14 @@ GRAPHQL SCALAR TYPES
 - Int
 - Float
 - Id
+
+
+
+
+CUSTOM TYPES
+============
+
+- A custom type is essentially an object made up of a set of fields of scalar types.
+
+
+NOTE: When querying data within graphql, you need to be specific down to the particular scalar values.

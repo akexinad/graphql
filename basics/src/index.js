@@ -8,30 +8,47 @@ import { GraphQLServer } from 'graphql-yoga';
     
 const typeDefs = `
     type Query {
+        me: User!
+        myPost: Post!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
+
+    type Post {
+        id: ID!
         title: String!
-        price: Float!
-        releaseYear: Int
-        rating: Float
-        inStock: Boolean!
+        body: String!
+        published: Boolean!
+        author: User!
     }
 `
 
 const resolvers = {
     Query: {
-        title() {
-            return 'If this is a man';
+        me() {
+            return {
+                id: '123098',
+                name: 'fellini',
+                email: 'fellini@rome.it'
+            }
         },
-        price() {
-            return 44.99;
-        },
-        releaseYear() {
-            return null;
-        },
-        rating() {
-            return 4.9;
-        },
-        inStock() {
-            return true;
+        myPost() {
+            return {
+                id: '123456',
+                title: 'this is my post title',
+                body: 'a very very very very long time ago...',
+                published: true,
+                author: {
+                    id: '123098',
+                    name: 'fellini',
+                    email: 'fellini@rome.it'
+                }
+            }
         }
     }
 }
