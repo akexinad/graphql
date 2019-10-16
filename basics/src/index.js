@@ -8,8 +8,9 @@ import { GraphQLServer } from 'graphql-yoga';
     
 const typeDefs = `
     type Query {
-        add(a: Int!, b: Int!): Int!
+        add(numbers: [Float!]!): Float!
         greeting(name: String, position: String): String!
+        grades: [Int!]!
         me: User!
         myPost: Post!
     }
@@ -32,8 +33,17 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        add(parent, { a, b }, ctx, info) {
-            return a + b;
+        grades() {
+            return [90, 88, 50, 99];
+        },
+        add(parent, args, ctx, info) {
+            if (args.numbers.length === 0) {
+                return 0;
+            };
+
+            return args.numbers.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            });
         },
         // There are 4 arguments that get passed to all resolver functions
         greeting(parent, args, ctx, info) {
