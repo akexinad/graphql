@@ -5,12 +5,75 @@ import { GraphQLServer } from 'graphql-yoga';
         // This is the APPLICATION SCHEMA, the entities/model that we will be using.
     // 2. RESOLVERS ARE IN THE NATIVE LANGUAGE.
 
+// Demo user data
+
+const posts = [
+    {
+      id: "5da7b6eba53428f1b20c722f",
+      title: "Plutorque",
+      body: "Et aliqua ex eu voluptate laborum eu sunt exercitation aliqua irure.",
+      published: true
+    },
+    {
+      id: "5da7b6ebf2039adc7e35e982",
+      title: "Strozen",
+      body: "Dolor sit et enim amet labore adipisicing.",
+      published: false
+    },
+    {
+      id: "5da7b6ebe68b9c3e53fe59b7",
+      title: "Genmex",
+      body: "Id et ex non do eiusmod.",
+      published: false
+    },
+    {
+      id: "5da7b6eb701d9ebcae5bf714",
+      title: "Panzent",
+      body: "Duis incididunt excepteur fugiat et.",
+      published: true
+    },
+    {
+      id: "5da7b6ebe3a3c6bd28c8ea0c",
+      title: "Klugger",
+      body: "Ipsum mollit magna proident culpa incididunt anim sit do.",
+      published: false
+    },
+    {
+      id: "5da7b6ebdc47f83cc3fafc35",
+      title: "Evidends",
+      body: "Duis eu consectetur minim duis mollit elit incididunt non laborum dolor cupidatat in culpa irure.",
+      published: true
+    },
+    {
+      id: "5da7b6ebd51aee136fa3af20",
+      title: "Springbee",
+      body: "Do excepteur commodo ipsum nulla.",
+      published: true
+    }
+  ]
+
+const users = [{
+    id: '1',
+    name: 'fellini',
+    email: 'fellini@ex.it',
+    age: 29
+}, {
+    id: '2',
+    name: 'benigni',
+    email: 'benigni@ex.it',
+    age: 44
+}, {
+    id: '3',
+    name: 'pasolini',
+    email: 'pasolini@ex.it',
+    age: null
+}]
+    
     
 const typeDefs = `
     type Query {
-        add(numbers: [Float!]!): Float!
-        greeting(name: String, position: String): String!
-        grades: [Int!]!
+        posts(query: String): [Post!]!
+        users(query: String): [User!]!
         me: User!
         myPost: Post!
     }
@@ -33,23 +96,21 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        grades() {
-            return [90, 88, 50, 99];
-        },
-        add(parent, args, ctx, info) {
-            if (args.numbers.length === 0) {
-                return 0;
-            };
+        posts(parent, args, ctx, info) {
+            if (!args.query) {
+                return posts
+            }
 
-            return args.numbers.reduce((accumulator, currentValue) => {
-                return accumulator + currentValue;
-            });
+            const query = args.query.toLowerCase();
+
+            return posts.filter(post => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
         },
-        // There are 4 arguments that get passed to all resolver functions
-        greeting(parent, args, ctx, info) {
-            console.log(args);
-            
-            return args.name ? `Hello ${ args.name }, you are my favourite ${ args.position }` : 'Hello!'
+        users(parent, args, ctx, info) {
+            if (!args.query) {
+                return users;
+            }
+
+            return users.filter(user => user.name.toLowerCase().includes(args.query.toLowerCase()));
         },
         me() {
             return {
