@@ -59,28 +59,52 @@ const posts = [
     }
   ]
 
-const users = [{
-    id: '1',
-    name: 'fellini',
-    email: 'fellini@ex.it',
-    age: 29
-}, {
-    id: '2',
-    name: 'benigni',
-    email: 'benigni@ex.it',
-    age: 44
-}, {
+const users = [
+    {
+        id: '1',
+        name: 'fellini',
+        email: 'fellini@ex.it',
+        age: 29
+    },
+    {
+        id: '2',
+        name: 'benigni',
+        email: 'benigni@ex.it',
+        age: 44
+    },
+    {
     id: '3',
     name: 'pasolini',
     email: 'pasolini@ex.it',
     age: null
-}]
+    }
+]
+
+const comments = [
+    {
+      id: "5da7e1153a6ae60359a271e1",
+      text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim."
+    },
+    {
+      id: "5da7e1155093c31e3c4c91fd",
+      text: "Quis consectetur aute ex nulla quis adipisicing proident esse enim ullamco nulla qui non officia. Dolore aliquip est laborum pariatur anim cillum ex mollit ullamco fugiat. Ex magna aliqua sint adipisicing Lorem velit nulla consectetur nulla amet ea nostrud velit."
+    },
+    {
+      id: "5da7e11541d408b8284fbe30",
+      text: "Lorem laborum incididunt veniam cillum eu eiusmod aute officia occaecat et adipisicing aute incididunt nisi. Ut fugiat eiusmod Lorem consectetur enim. Dolor eiusmod pariatur aliqua pariatur culpa exercitation duis magna ullamco."
+    },
+    {
+      id: "5da7e115f841901d0464ac24",
+      text: "Lorem eiusmod laborum labore Lorem qui culpa anim minim labore ad. Labore magna eiusmod nostrud voluptate ea consequat eu aute anim et et eu cupidatat in. Fugiat nostrud duis proident nulla sint."
+    }
+  ]
     
     
 const typeDefs = `
     type Query {
         posts(query: String): [Post!]!
         users(query: String): [User!]!
+        comments: [Comment!]!
         me: User!
         myPost: Post!
     }
@@ -100,10 +124,18 @@ const typeDefs = `
         published: Boolean!
         author: User!
     }
+
+    type Comment {
+        id: ID!
+        text: String!
+    }
 `
 
 const resolvers = {
     Query: {
+        comments() {
+            return comments;
+        },
         posts(parent, args, ctx, info) {
             if (!args.query) {
                 return posts
