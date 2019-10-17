@@ -12,43 +12,50 @@ const posts = [
       id: "5da7b6eba53428f1b20c722f",
       title: "Plutorque",
       body: "Et aliqua ex eu voluptate laborum eu sunt exercitation aliqua irure.",
-      published: true
+      published: true,
+      author: '3'
     },
     {
       id: "5da7b6ebf2039adc7e35e982",
       title: "Strozen",
       body: "Dolor sit et enim amet labore adipisicing.",
-      published: false
+      published: false,
+      author: '1'
     },
     {
       id: "5da7b6ebe68b9c3e53fe59b7",
       title: "Genmex",
       body: "Id et ex non do eiusmod.",
-      published: false
+      published: false,
+      author: '2'
     },
     {
       id: "5da7b6eb701d9ebcae5bf714",
       title: "Panzent",
       body: "Duis incididunt excepteur fugiat et.",
-      published: true
+      published: true,
+      author: '3'
     },
     {
       id: "5da7b6ebe3a3c6bd28c8ea0c",
       title: "Klugger",
       body: "Ipsum mollit magna proident culpa incididunt anim sit do.",
-      published: false
+      published: false,
+      author: '1'
     },
     {
       id: "5da7b6ebdc47f83cc3fafc35",
       title: "Evidends",
       body: "Duis eu consectetur minim duis mollit elit incididunt non laborum dolor cupidatat in culpa irure.",
-      published: true
+      published: true,
+      author: '2'
     },
     {
       id: "5da7b6ebd51aee136fa3af20",
       title: "Springbee",
       body: "Do excepteur commodo ipsum nulla.",
-      published: true
+      published: true,
+      author: '3'
     }
   ]
 
@@ -83,6 +90,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post]!
     }
 
     type Post {
@@ -131,6 +139,16 @@ const resolvers = {
                     email: 'fellini@rome.it'
                 }
             }
+        }
+    },
+    Post: {
+        author(parent, args, ctx, info) {
+            return users.find(user => user.id === parent.author);
+        }
+    },
+    User: {
+        posts(parent, args, ctx, info) {
+            return posts.filter(post => post.author === parent.id);
         }
     }
 }
