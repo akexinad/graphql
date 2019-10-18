@@ -108,7 +108,7 @@ const typeDefs = `
     type Query {
         posts(query: String): [Post!]!
         users(query: String): [User!]!
-        comments: [Comment!]!
+        comments(query: String): [Comment!]!
         me: User!
         myPost: Post!
     }
@@ -138,8 +138,14 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        comments() {
-            return comments;
+        comments(parent, args, ctx, info) {
+            if (!args.query) {
+                return comments;
+            }
+
+            const query = args.query.toLowerCase();
+
+            return comments.filter(comment => comment.text.toLowerCase().includes(query));
         },
         posts(parent, args, ctx, info) {
             if (!args.query) {
@@ -187,7 +193,8 @@ const resolvers = {
         posts(parent, args, ctx, info) {
             return posts.filter(post => post.author === parent.id);
         }
-    }
+    },
+
 }
 
 const server = new GraphQLServer({
