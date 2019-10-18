@@ -84,22 +84,26 @@ const comments = [
     {
       id: "5da7e1153a6ae60359a271e1",
       text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim.",
-      author: '1'
+      author: '1',
+      post: '5da7b6eba53428f1b20c722f'
     },
     {
       id: "5da7e1155093c31e3c4c91fd",
       text: "Quis consectetur aute ex nulla quis adipisicing proident esse enim ullamco nulla qui non officia. Dolore aliquip est laborum pariatur anim cillum ex mollit ullamco fugiat. Ex magna aliqua sint adipisicing Lorem velit nulla consectetur nulla amet ea nostrud velit.",
-      author: '2'
+      author: '2',
+      post: '5da7b6ebf2039adc7e35e982'
     },
     {
       id: "5da7e11541d408b8284fbe30",
       text: "Lorem laborum incididunt veniam cillum eu eiusmod aute officia occaecat et adipisicing aute incididunt nisi. Ut fugiat eiusmod Lorem consectetur enim. Dolor eiusmod pariatur aliqua pariatur culpa exercitation duis magna ullamco.",
-      author: '3'
+      author: '3',
+      post: '5da7b6ebe68b9c3e53fe59b7'
     },
     {
       id: "5da7e115f841901d0464ac24",
       text: "Lorem eiusmod laborum labore Lorem qui culpa anim minim labore ad. Labore magna eiusmod nostrud voluptate ea consequat eu aute anim et et eu cupidatat in. Fugiat nostrud duis proident nulla sint.",
-      author: '1'
+      author: '1',
+      post: '5da7b6eb701d9ebcae5bf714'
     }
   ]
     
@@ -128,12 +132,14 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment]!
     }
 
     type Comment {
         id: ID!
         text: String!
         author: User!
+        post: Post!
     }
 `
 
@@ -188,6 +194,9 @@ const resolvers = {
     Post: {
         author(parent, args, ctx, info) {
             return users.find(user => user.id === parent.author);
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => comment.post === parent.id);
         }
     },
     User: {
@@ -195,12 +204,15 @@ const resolvers = {
             return posts.filter(post => post.author === parent.id);
         },
         comments(parent, args, ctx, info) {
-            return comments.filter(comment => comment.author === parent.id)
+            return comments.filter(comment => comment.author === parent.id);
         }
     },
     Comment: {
         author(parent, args, ctx, info) {
-            return users.find(user => user.id === parent.author)
+            return users.find(user => user.id === parent.author);
+        },
+        post(parent, args, ctx, info) {
+            return posts.find(post => post.id === parent.post);
         }
     }
 
