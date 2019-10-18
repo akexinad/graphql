@@ -73,29 +73,33 @@ const users = [
         age: 44
     },
     {
-    id: '3',
-    name: 'pasolini',
-    email: 'pasolini@ex.it',
-    age: null
+        id: '3',
+        name: 'pasolini',
+        email: 'pasolini@ex.it',
+        age: null
     }
 ]
 
 const comments = [
     {
       id: "5da7e1153a6ae60359a271e1",
-      text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim."
+      text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim.",
+      author: '1'
     },
     {
       id: "5da7e1155093c31e3c4c91fd",
-      text: "Quis consectetur aute ex nulla quis adipisicing proident esse enim ullamco nulla qui non officia. Dolore aliquip est laborum pariatur anim cillum ex mollit ullamco fugiat. Ex magna aliqua sint adipisicing Lorem velit nulla consectetur nulla amet ea nostrud velit."
+      text: "Quis consectetur aute ex nulla quis adipisicing proident esse enim ullamco nulla qui non officia. Dolore aliquip est laborum pariatur anim cillum ex mollit ullamco fugiat. Ex magna aliqua sint adipisicing Lorem velit nulla consectetur nulla amet ea nostrud velit.",
+      author: '2'
     },
     {
       id: "5da7e11541d408b8284fbe30",
-      text: "Lorem laborum incididunt veniam cillum eu eiusmod aute officia occaecat et adipisicing aute incididunt nisi. Ut fugiat eiusmod Lorem consectetur enim. Dolor eiusmod pariatur aliqua pariatur culpa exercitation duis magna ullamco."
+      text: "Lorem laborum incididunt veniam cillum eu eiusmod aute officia occaecat et adipisicing aute incididunt nisi. Ut fugiat eiusmod Lorem consectetur enim. Dolor eiusmod pariatur aliqua pariatur culpa exercitation duis magna ullamco.",
+      author: '3'
     },
     {
       id: "5da7e115f841901d0464ac24",
-      text: "Lorem eiusmod laborum labore Lorem qui culpa anim minim labore ad. Labore magna eiusmod nostrud voluptate ea consequat eu aute anim et et eu cupidatat in. Fugiat nostrud duis proident nulla sint."
+      text: "Lorem eiusmod laborum labore Lorem qui culpa anim minim labore ad. Labore magna eiusmod nostrud voluptate ea consequat eu aute anim et et eu cupidatat in. Fugiat nostrud duis proident nulla sint.",
+      author: '1'
     }
   ]
     
@@ -128,6 +132,7 @@ const typeDefs = `
     type Comment {
         id: ID!
         text: String!
+        author: User!
     }
 `
 
