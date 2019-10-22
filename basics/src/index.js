@@ -222,7 +222,6 @@ const resolvers = {
             }
 
             /*
-
             now we can use the es6 object-rest-spread operator.
 
             const user = {
@@ -231,14 +230,12 @@ const resolvers = {
                 email: args.email,
                 age: args.age
             }
-
             */
 
             const user = {
                 id: uuidv4(),
                 ...args
             }
-
 
             users.push(user);
 
@@ -302,7 +299,6 @@ const resolvers = {
             return posts.find(post => post.id === parent.post);
         }
     }
-
 }
 
 const server = new GraphQLServer({
