@@ -8,7 +8,7 @@ import uuidv4 from 'uuid/v4';
 
 // Demo user data
 
-const posts = [
+let posts = [
     {
       id: "5da7b6eba53428f1b20c722f",
       title: "Plutorque",
@@ -60,7 +60,7 @@ const posts = [
     }
   ]
 
-const users = [
+let users = [
     {
         id: '1',
         name: 'fellini',
@@ -81,7 +81,7 @@ const users = [
     }
 ]
 
-const comments = [
+let comments = [
     {
       id: "5da7e1153a6ae60359a271e1",
       text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim.",
@@ -120,6 +120,7 @@ const typeDefs = `
 
     type Mutation {
         createUser(data: CreateUserInput!): User!
+        deleteUser(id: ID!): User!
         createPost(data: CreatePostInput!): Post!
         createComment(data: CreateCommentInput!): Comment!
     }
@@ -247,6 +248,36 @@ const resolvers = {
             users.push(user);
 
             return user;
+        },
+        deleteUser(parent, args, ctx, info) {
+            const userIndex = users.findIndex(user => user.id === args.id);
+
+            if (userIndex === -1) {
+                throw new Error('404: User not found');
+            }
+
+            const deletedUsers = users.splice(userIndex, 1);
+
+            // Since user is a non-nullable field in comments and posts, 
+            // we need to also deleted the posts and comments related to the deleted user.
+            
+            posts = posts.filter(post => {
+                const match = post.author === args.id;
+
+                // if the posts was made by the deleted user,
+                // delete the comments made by the deleted user.
+                if (match) {
+                    comments = comments.filter(comment => comment.post !== post.id);
+                }
+
+                // return the posts that did not match to the user that is being deleted.
+                return !match
+            });
+
+            // filter out the comments that belong to the deleted user.
+            comments = comments.filter(comment => comment.author !== args.id);
+            
+            return deletedUsers[0];
         },
         createPost(parent, args, ctx, info) {
 
