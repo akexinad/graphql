@@ -63,4 +63,11 @@ MUTUTATION
 ==========
 
 - The graphql mutation is an operation allows us to create, update and delete data.
-- 
+
+
+
+
+THE INPUT TYPE
+==============
+
+- Every variable declared in the input can ONLY be a scalar type, you cannot use a custom type.

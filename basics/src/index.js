@@ -119,24 +119,28 @@ const typeDefs = `
     }
 
     type Mutation {
-        createUser(
-            name: String!,
-            email: String!,
-            age: Int
-        ): User!
+        createUser(data: CreateUserInput!): User!
+        createPost(data: CreatePostInput!): Post!
+        createComment(data: CreateCommentInput!): Comment!
+    }
 
-        createPost(
-            title: String!
-            body: String!
-            published: Boolean!
-            author: ID!
-        ): Post!
+    input CreateUserInput {
+        name: String!
+        email: String!
+        age: Int
+    }
 
-        createComment(
-            text: String!
-            author: ID!
-            post: ID!
-        ): Comment!
+    input CreatePostInput {
+        title: String!
+        body: String!
+        published: Boolean!
+        author: ID!
+    }
+
+    input CreateCommentInput {
+        text: String!
+        author: ID!
+        post: ID!
     }
 
     type User {
@@ -215,7 +219,10 @@ const resolvers = {
     },
     Mutation: {
         createUser(parent, args, ctx, info) {
-            const emailTaken = users.some(user => user.email === args.email);
+
+            const data = args.data;
+            
+            const emailTaken = users.some(user => user.email === data.email);
 
             if (emailTaken) {
                 throw new Error('Email has already been taken.');
@@ -234,7 +241,7 @@ const resolvers = {
 
             const user = {
                 id: uuidv4(),
-                ...args
+                ...data
             }
 
             users.push(user);
@@ -242,7 +249,10 @@ const resolvers = {
             return user;
         },
         createPost(parent, args, ctx, info) {
-            const userExists = users.some(user => user.id === args.author);
+
+            const data = args.data;
+            
+            const userExists = users.some(user => user.id === data.author);
 
             if (!userExists) {
                 throw new Error('404: User not found');
@@ -250,7 +260,7 @@ const resolvers = {
 
             const post = {
                 id: uuidv4(),
-                ...args
+                ...data
             }
 
             posts.push(post);
@@ -258,8 +268,11 @@ const resolvers = {
             return post;
         },
         createComment(parent, args, ctx, info) {
-            const userExists = users.some(user => user.id === args.author);
-            const postExists = posts.some(post => post.id === args.post && post.published);
+
+            const data = args.data;
+            
+            const userExists = users.some(user => user.id === data.author);
+            const postExists = posts.some(post => post.id === data.post && post.published);
 
             if (!userExists || !postExists) {
                 throw new Error('404: User or post not found');
@@ -267,7 +280,7 @@ const resolvers = {
 
             const comment = {
                 id: uuidv4(),
-                ...args
+                ...data
             }
 
             comments.push(comment);
