@@ -2,9 +2,12 @@
   "name": "basics",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "nodemon src/index.js --exec babel-node",
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "start": "nodemon dist/index.js --exec babel-node",
+    "prestart": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,7 +24,12 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.33",
+    "@types/uuid": "^3.4.5",
+    "@types/ws": "^6.0.3",
     "nodemon": "^1.19.2",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4"
   }
 }
