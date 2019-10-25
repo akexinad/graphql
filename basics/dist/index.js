@@ -312,6 +312,10 @@ const server = new graphql_yoga_1.GraphQLServer({
     resolvers
 });
 server.start(() => {
+    console.log("hello world");
     console.log("Server is running on http://localhost:4000");
+    let x;
+    x = 4;
+    console.log(`the number ${x}`);
 });
 //# sourceMappingURL=index.js.map

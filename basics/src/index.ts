@@ -1,5 +1,6 @@
 import { GraphQLServer } from "graphql-yoga";
 import uuidv4 from "uuid/v4";
+import { IComment, IPost, IUser } from "./models";
 
 // To build the API, we need 2 things:
     // 1. TYPE DEFINITIONS.
@@ -8,7 +9,7 @@ import uuidv4 from "uuid/v4";
 
 // Demo user data
 
-let posts = [
+let posts: IPost[] = [
     {
       id: "p001",
       title: "Plutorque",
@@ -60,7 +61,7 @@ let posts = [
     }
   ];
 
-const users = [
+const users: IUser[] = [
     {
         id: "1",
         name: "fellini",
@@ -81,7 +82,7 @@ const users = [
     }
 ];
 
-let comments = [
+let comments: IComment[] = [
     {
       id: "5da7e1153a6ae60359a271e1",
       text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim.",
@@ -221,9 +222,9 @@ const resolvers = {
     Mutation: {
         createUser(parent: any, args: any, ctx: any, info: any) {
 
-            const data = args.data;
+            const data: IUser = args.data;
 
-            const emailTaken = users.some((user) => user.email === data.email);
+            const emailTaken: boolean = users.some((user) => user.email === data.email);
 
             if (emailTaken) {
                 throw new Error("Email has already been taken.");
@@ -240,7 +241,7 @@ const resolvers = {
             }
             */
 
-            const user = {
+            const user: IUser = {
                 id: uuidv4(),
                 ...data
             };
@@ -249,20 +250,20 @@ const resolvers = {
 
             return user;
         },
-        deleteUser(parent: any, args: any, ctx: any, info: any) {
-            const userIndex = users.findIndex((user) => user.id === args.id);
+        deleteUser(parent: any, args: IUser, ctx: any, info: any) {
+            const userIndex: number = users.findIndex((user) => user.id === args.id);
 
             if (userIndex === -1) {
                 throw new Error("404: User not found");
             }
 
-            const deletedUsers = users.splice(userIndex, 1);
+            const deletedUsers: IUser[] = users.splice(userIndex, 1);
 
             // Since user is a non-nullable field in comments and posts,
             // we need to also deleted the posts and comments related to the deleted user.
 
             posts = posts.filter((post) => {
-                const match = post.author === args.id;
+                const match: boolean = post.author === args.id;
 
                 // if the posts was made by the deleted user,
                 // delete the comments made by the deleted user.
@@ -281,15 +282,15 @@ const resolvers = {
         },
         createPost(parent: any, args: any, ctx: any, info: any) {
 
-            const data = args.data;
+            const data: IPost = args.data;
 
-            const userExists = users.some((user) => user.id === data.author);
+            const userExists: boolean = users.some((user) => user.id === data.author);
 
             if (!userExists) {
                 throw new Error("404: User not found");
             }
 
-            const post = {
+            const post: IPost = {
                 id: uuidv4(),
                 ...data
             };
@@ -298,7 +299,7 @@ const resolvers = {
 
             return post;
         },
-        deletePost(parent: any, args: any, ctx: any, info: any) {
+        deletePost(parent: any, args: IPost[], ctx: any, info: any) {
             const postIndex = posts.findIndex((post) => post.id === args.id);
 
             if (postIndex === -1) {
@@ -307,16 +308,16 @@ const resolvers = {
         },
         createComment(parent: any, args: any, ctx: any, info: any) {
 
-            const data = args.data;
+            const data: IComment = args.data;
 
-            const userExists = users.some((user) => user.id === data.author);
-            const postExists = posts.some((post) => post.id === data.post && post.published);
+            const userExists: boolean = users.some((user) => user.id === data.author);
+            const postExists: boolean = posts.some((post) => post.id === data.post && post.published);
 
             if (!userExists || !postExists) {
                 throw new Error("404: User or post not found");
             }
 
-            const comment = {
+            const comment: IComment = {
                 id: uuidv4(),
                 ...data
             };
@@ -327,32 +328,32 @@ const resolvers = {
         }
     },
     Post: {
-        author(parent: any, args: any, ctx: any, info: any) {
+        author(parent: IPost, args: any, ctx: any, info: any) {
             return users.find((user) => user.id === parent.author);
         },
-        comments(parent: any, args: any, ctx: any, info: any) {
+        comments(parent: IComment, args: any, ctx: any, info: any) {
             return comments.filter((comment) => comment.post === parent.id);
         }
     },
     User: {
-        posts(parent: any, args: any, ctx: any, info: any) {
+        posts(parent: IUser, args: any, ctx: any, info: any) {
             return posts.filter((post) => post.author === parent.id);
         },
-        comments(parent: any, args: any, ctx: any, info: any) {
+        comments(parent: IComment, args: any, ctx: any, info: any) {
             return comments.filter((comment) => comment.author === parent.id);
         }
     },
     Comment: {
-        author(parent: any, args: any, ctx: any, info: any) {
+        author(parent: IComment, args: any, ctx: any, info: any) {
             return users.find((user) => user.id === parent.author);
         },
-        post(parent: any, args: any, ctx: any, info: any) {
+        post(parent: IComment, args: any, ctx: any, info: any) {
             return posts.find((post) => post.id === parent.post);
         }
     }
 };
 
-const server = new GraphQLServer({
+const server: GraphQLServer = new GraphQLServer({
     typeDefs,
     resolvers
 });
