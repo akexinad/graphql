@@ -83,28 +83,28 @@ const users = [
 ];
 let comments = [
     {
-        id: "5da7e1153a6ae60359a271e1",
+        id: "c001",
         text: "Et occaecat duis aliquip nisi magna culpa est officia dolor non sint id ex exercitation. Proident culpa cillum dolore adipisicing eu ea anim velit cupidatat tempor eiusmod commodo. Consectetur Lorem sint eu mollit anim.",
         author: "1",
-        post: "5da7b6eba53428f1b20c722f"
+        post: "p001"
     },
     {
-        id: "5da7e1155093c31e3c4c91fd",
+        id: "c002",
         text: "Quis consectetur aute ex nulla quis adipisicing proident esse enim ullamco nulla qui non officia. Dolore aliquip est laborum pariatur anim cillum ex mollit ullamco fugiat. Ex magna aliqua sint adipisicing Lorem velit nulla consectetur nulla amet ea nostrud velit.",
         author: "2",
-        post: "5da7b6ebf2039adc7e35e982"
+        post: "p002"
     },
     {
-        id: "5da7e11541d408b8284fbe30",
+        id: "c003",
         text: "Lorem laborum incididunt veniam cillum eu eiusmod aute officia occaecat et adipisicing aute incididunt nisi. Ut fugiat eiusmod Lorem consectetur enim. Dolor eiusmod pariatur aliqua pariatur culpa exercitation duis magna ullamco.",
         author: "3",
-        post: "5da7b6ebe68b9c3e53fe59b7"
+        post: "p003"
     },
     {
-        id: "5da7e115f841901d0464ac24",
+        id: "c004",
         text: "Lorem eiusmod laborum labore Lorem qui culpa anim minim labore ad. Labore magna eiusmod nostrud voluptate ea consequat eu aute anim et et eu cupidatat in. Fugiat nostrud duis proident nulla sint.",
         author: "1",
-        post: "5da7b6eb701d9ebcae5bf714"
+        post: "p004"
     }
 ];
 const typeDefs = `
@@ -122,6 +122,7 @@ const typeDefs = `
         createPost(data: CreatePostInput!): Post!
         deletePost(id: ID!): Post!
         createComment(data: CreateCommentInput!): Comment!
+        deleteComment(id: ID!): Comment!
     }
 
     input CreateUserInput {
@@ -269,6 +270,10 @@ const resolvers = {
             if (postIndex === -1) {
                 throw new Error("404: Post Not Found");
             }
+            const deletedPosts = posts.splice(postIndex, 1);
+            // Delete the comments associated to that post.
+            comments = comments.filter((comment) => comment.post !== args.id);
+            return deletedPosts[0];
         },
         createComment(parent, args, ctx, info) {
             const data = args.data;
@@ -280,6 +285,14 @@ const resolvers = {
             const comment = Object.assign({ id: v4_1.default() }, data);
             comments.push(comment);
             return comment;
+        },
+        deleteComment(parent, args, ctx, info) {
+            const commentIndex = comments.findIndex((comment) => comment.id === args.id);
+            if (commentIndex === -1) {
+                throw new Error("404: Comment Not Found!");
+            }
+            const deletedComments = comments.splice(commentIndex, 1);
+            return deletedComments[0];
         }
     },
     Post: {
@@ -312,10 +325,6 @@ const server = new graphql_yoga_1.GraphQLServer({
     resolvers
 });
 server.start(() => {
-    console.log("hello world");
     console.log("Server is running on http://localhost:4000");
-    let x;
-    x = 4;
-    console.log(`the number ${x}`);
 });
 //# sourceMappingURL=index.js.map
