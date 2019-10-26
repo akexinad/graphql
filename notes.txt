@@ -71,7 +71,3 @@ THE INPUT TYPE
 ==============
 
 - Every variable declared in the input can ONLY be a scalar type, you cannot use a custom type.
-
-
-
-HELLO WORLD
