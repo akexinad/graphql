@@ -1,5 +1,5 @@
 import { GraphQLServer } from "graphql-yoga";
-import { comments, posts, users } from "./db";
+import { db } from "./db";
 import { Comment } from "./resolvers/Comment";
 import { Mutation } from "./resolvers/Mutation";
 import { Post } from "./resolvers/Post";
@@ -21,9 +21,7 @@ const server: GraphQLServer = new GraphQLServer({
         User
     },
     context: {
-        users,
-        posts,
-        comments
+        db
     }
 });
 

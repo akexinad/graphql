@@ -21,9 +21,7 @@ const server = new graphql_yoga_1.GraphQLServer({
         User: User_1.User
     },
     context: {
-        users: db_1.users,
-        posts: db_1.posts,
-        comments: db_1.comments
+        db: db_1.db
     }
 });
 server.start(() => {
