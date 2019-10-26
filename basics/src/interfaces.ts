@@ -21,3 +21,21 @@ export interface IComment {
     author: IUser["id"];
     post: IPost["id"];
 }
+
+export interface ICtx {
+    users: IUser[];
+    posts: IPost[];
+    comments: IComment[];
+}
+
+export interface IUserArgs {
+    data: IUser;
+}
+
+export interface IPostArgs {
+    data: IPost;
+}
+
+export interface ICommentArgs {
+    data: IComment;
+}
