@@ -1,5 +1,4 @@
-type Query 
-{
+type Query {
     posts(query: String): [Post!]!
     users(query: String): [User!]!
     comments(query: String): [Comment!]!
@@ -7,8 +6,7 @@ type Query
     myPost: Post!
 }
 
-type Mutation 
-{
+type Mutation {
     createUser(data: CreateUserInput!): User!
     deleteUser(id: ID!): User!
     updateUser(id: ID!, data: UpdateUserInput!): User!
@@ -22,49 +20,42 @@ type Mutation
     updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
-input CreateUserInput
-{
+input CreateUserInput {
     name: String!
     email: String!
     age: Int
 }
 
-input UpdateUserInput
-{
+input UpdateUserInput {
     name: String
     email: String
     age: Int
 }
 
-input CreatePostInput 
-{
+input CreatePostInput  {
     title: String!
     body: String!
     published: Boolean!
     author: ID!
 }
 
-input UpdatePostInput
-{
+input UpdatePostInput {
     title: String,
     body: String,
     published: Boolean
 }
 
-input CreateCommentInput 
-{
+input CreateCommentInput  {
     text: String!
     author: ID!
     post: ID!
 }
 
-input UpdateCommentInput
-{
+input UpdateCommentInput {
     text: String
 }
 
-type User 
-{
+type User {
     id: ID!
     name: String!
     email: String!
@@ -73,8 +64,7 @@ type User
     comments: [Comment]!
 }
 
-type Post 
-{
+type Post {
     id: ID!
     title: String!
     body: String!
@@ -83,8 +73,7 @@ type Post
     comments: [Comment]!
 }
 
-type Comment 
-{
+type Comment {
     id: ID!
     text: String!
     author: User!
