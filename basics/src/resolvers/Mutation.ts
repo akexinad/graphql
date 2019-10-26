@@ -95,7 +95,7 @@ export const Mutation = {
 
         return user;
     },
-    createPost(parent: any, args: IPostArgs, { db }: IGqlCtx, info: any) {
+    createPost(parent: any, args: IPostArgs, { db, pubsub }: IGqlCtx, info: any) {
 
         const data: IPost = args.data;
 
@@ -111,6 +111,10 @@ export const Mutation = {
         };
 
         db.posts.push(post);
+
+        if (post.published) {
+            pubsub.publish("posts", { post });
+        }
 
         return post;
     },
@@ -150,7 +154,7 @@ export const Mutation = {
 
         return post;
     },
-    createComment(parent: any, args: ICommentArgs, { db }: IGqlCtx, info: any) {
+    createComment(parent: any, args: ICommentArgs, { db, pubsub }: IGqlCtx, info: any) {
 
         const data: IComment = args.data;
 
@@ -167,6 +171,8 @@ export const Mutation = {
         };
 
         db.comments.push(comment);
+
+        pubsub.publish(`comment ${ data.post }`, { comment });
 
         return comment;
     },

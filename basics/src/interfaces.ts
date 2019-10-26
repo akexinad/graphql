@@ -59,3 +59,7 @@ export interface IUpdateComment {
     id: IComment["id"];
     data: IComment;
 }
+
+export interface ICommentSub {
+    postId: IPost["id"];
+}
