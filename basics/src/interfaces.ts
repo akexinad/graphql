@@ -35,7 +35,7 @@ export interface IUserArgs {
 }
 
 export interface IUpdateUser {
-    id: string;
+    id: IUser["id"];
     data: IUser;
 }
 
@@ -43,6 +43,16 @@ export interface IPostArgs {
     data: IPost;
 }
 
+export interface IUpdatePost {
+    id: IPost["id"];
+    data: IPost;
+}
+
 export interface ICommentArgs {
+    data: IComment;
+}
+
+export interface IUpdateComment {
+    id: IComment["id"];
     data: IComment;
 }

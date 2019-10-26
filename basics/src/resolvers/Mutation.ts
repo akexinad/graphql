@@ -1,4 +1,4 @@
-import { IComment, ICommentArgs, IDbCtx, IPost, IPostArgs, IUpdateUser, IUser, IUserArgs } from "../interfaces";
+import { IComment, ICommentArgs, IDbCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
 
 import uuidv4 from "uuid/v4";
 
@@ -66,7 +66,6 @@ export const Mutation = {
     updateUser(parent: any, args: IUpdateUser, { db }: IDbCtx, info: any) {
 
         const data = args.data;
-        console.log(db);
 
         const user = db.users.find((user) => user.id === args.id);
 
@@ -128,6 +127,28 @@ export const Mutation = {
 
         return deletedPosts[0];
     },
+    updatePost(parent: any, args: IUpdatePost, { db }: IDbCtx, info: any) {
+        const data = args.data;
+        const post = db.posts.find((post) => post.id === args.id);
+
+        if (!post) {
+            throw new Error("404: Post Not Found!");
+        }
+
+        if (typeof data.title === "string") {
+            post.title = data.title;
+        }
+
+        if (typeof data.body === "string") {
+            post.body = data.body;
+        }
+
+        if (typeof data.published === "boolean") {
+            post.published = data.published;
+        }
+
+        return post;
+    },
     createComment(parent: any, args: ICommentArgs, { db }: IDbCtx, info: any) {
 
         const data: IComment = args.data;
@@ -145,6 +166,20 @@ export const Mutation = {
         };
 
         db.comments.push(comment);
+
+        return comment;
+    },
+    updateComment(parent: any, args: IUpdateComment, { db }: IDbCtx, info: any) {
+        const data = args.data;
+        const comment = db.comments.find((comment) => comment.id === args.id);
+
+        if (!comment) {
+            throw new Error("404: Comment Not Found!");
+        }
+
+        if (typeof data.text === "string") {
+            comment.text = data.text;
+        }
 
         return comment;
     },
