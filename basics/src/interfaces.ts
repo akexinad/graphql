@@ -1,3 +1,5 @@
+import { PubSub } from "graphql-yoga";
+
 export interface IUser {
     id: string;
     name: string;
@@ -22,12 +24,13 @@ export interface IComment {
     post: IPost["id"];
 }
 
-export interface IDbCtx {
+export interface IGqlCtx {
     db: {
         users: IUser[];
         posts: IPost[];
         comments: IComment[];
     };
+    pubsub: PubSub;
 }
 
 export interface IUserArgs {

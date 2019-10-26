@@ -1,7 +1,7 @@
-import { IComment, IDbCtx, IPost, IUser } from "../interfaces";
+import { IComment, IGqlCtx, IPost, IUser } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { db }: IDbCtx, info: any) {
+    users(parent: any, args: any, { db }: IGqlCtx, info: any) {
         if (!args.query) {
             return db.users;
         }
@@ -9,7 +9,7 @@ export const Query = {
         return db.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
     },
 
-    posts(parent: any, args: any, { db }: IDbCtx, info: any) {
+    posts(parent: any, args: any, { db }: IGqlCtx, info: any) {
         if (!args.query) {
             return db.posts;
         }
@@ -19,7 +19,7 @@ export const Query = {
         return db.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
     },
 
-    comments(parent: any, args: any, { db }: IDbCtx, info: any) {
+    comments(parent: any, args: any, { db }: IGqlCtx, info: any) {
 
         if (!args.query) {
             return db.comments;

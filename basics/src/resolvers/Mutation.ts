@@ -1,9 +1,10 @@
-import { IComment, ICommentArgs, IDbCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
+import { IComment, ICommentArgs, IGqlCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
 
+import { Context } from "graphql-yoga/dist/types";
 import uuidv4 from "uuid/v4";
 
 export const Mutation = {
-    createUser(parent: any, args: IUserArgs, { db }: IDbCtx, info: any) {
+    createUser(parent: any, args: IUserArgs, { db }: IGqlCtx, info: any) {
 
         const data: IUser = args.data;
 
@@ -33,7 +34,7 @@ export const Mutation = {
 
         return user;
     },
-    deleteUser(parent: any, args: IUser, { db }: IDbCtx, info: any) {
+    deleteUser(parent: any, args: IUser, { db }: IGqlCtx, info: any) {
         const userIndex: number = db.users.findIndex((user) => user.id === args.id);
 
         if (userIndex === -1) {
@@ -63,7 +64,7 @@ export const Mutation = {
 
         return deletedUsers[0];
     },
-    updateUser(parent: any, args: IUpdateUser, { db }: IDbCtx, info: any) {
+    updateUser(parent: any, args: IUpdateUser, { db }: IGqlCtx, info: any) {
 
         const data = args.data;
 
@@ -94,7 +95,7 @@ export const Mutation = {
 
         return user;
     },
-    createPost(parent: any, args: IPostArgs, { db }: IDbCtx, info: any) {
+    createPost(parent: any, args: IPostArgs, { db }: IGqlCtx, info: any) {
 
         const data: IPost = args.data;
 
@@ -113,7 +114,7 @@ export const Mutation = {
 
         return post;
     },
-    deletePost(parent: any, args: IPost, { db }: IDbCtx, info: any) {
+    deletePost(parent: any, args: IPost, { db }: IGqlCtx, info: any) {
         const postIndex: number = db.posts.findIndex((post) => post.id === args.id);
 
         if (postIndex === -1) {
@@ -127,7 +128,7 @@ export const Mutation = {
 
         return deletedPosts[0];
     },
-    updatePost(parent: any, args: IUpdatePost, { db }: IDbCtx, info: any) {
+    updatePost(parent: any, args: IUpdatePost, { db }: IGqlCtx, info: any) {
         const data = args.data;
         const post = db.posts.find((post) => post.id === args.id);
 
@@ -149,7 +150,7 @@ export const Mutation = {
 
         return post;
     },
-    createComment(parent: any, args: ICommentArgs, { db }: IDbCtx, info: any) {
+    createComment(parent: any, args: ICommentArgs, { db }: IGqlCtx, info: any) {
 
         const data: IComment = args.data;
 
@@ -169,7 +170,7 @@ export const Mutation = {
 
         return comment;
     },
-    updateComment(parent: any, args: IUpdateComment, { db }: IDbCtx, info: any) {
+    updateComment(parent: any, args: IUpdateComment, { db }: IGqlCtx, info: any) {
         const data = args.data;
         const comment = db.comments.find((comment) => comment.id === args.id);
 
@@ -183,7 +184,7 @@ export const Mutation = {
 
         return comment;
     },
-    deleteComment(parent: any, args: IComment, { db }: IDbCtx, info: any) {
+    deleteComment(parent: any, args: IComment, { db }: IGqlCtx, info: any) {
         const commentIndex: number = db.comments.findIndex((comment) => comment.id === args.id);
 
         if (commentIndex === -1) {

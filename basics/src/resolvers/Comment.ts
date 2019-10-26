@@ -1,10 +1,10 @@
-import { IComment, IDbCtx } from "../interfaces";
+import { IComment, IGqlCtx } from "../interfaces";
 
 export const Comment = {
-    author(parent: IComment, args: any, { db }: IDbCtx, info: any) {
+    author(parent: IComment, args: any, { db }: IGqlCtx, info: any) {
         return db.users.find((user) => user.id === parent.author);
     },
-    post(parent: IComment, args: any, { db }: IDbCtx, info: any) {
+    post(parent: IComment, args: any, { db }: IGqlCtx, info: any) {
         return db.posts.find((post) => post.id === parent.post);
     }
 };
