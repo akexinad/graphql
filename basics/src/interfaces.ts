@@ -22,13 +22,20 @@ export interface IComment {
     post: IPost["id"];
 }
 
-export interface ICtx {
-    users: IUser[];
-    posts: IPost[];
-    comments: IComment[];
+export interface IDbCtx {
+    db: {
+        users: IUser[];
+        posts: IPost[];
+        comments: IComment[];
+    };
 }
 
 export interface IUserArgs {
+    data: IUser;
+}
+
+export interface IUpdateUser {
+    id: string;
     data: IUser;
 }
 

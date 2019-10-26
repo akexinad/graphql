@@ -1,33 +1,33 @@
-import { IComment, ICtx, IPost, IUser } from "../interfaces";
+import { IComment, IDbCtx, IPost, IUser } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, ctx: ICtx, info: any) {
+    users(parent: any, args: any, { db }: IDbCtx, info: any) {
         if (!args.query) {
-            return ctx.users;
+            return db.users;
         }
 
-        return ctx.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
+        return db.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
     },
 
-    posts(parent: any, args: any, ctx: ICtx, info: any) {
+    posts(parent: any, args: any, { db }: IDbCtx, info: any) {
         if (!args.query) {
-            return ctx.posts;
+            return db.posts;
         }
 
         const query = args.query.toLowerCase();
 
-        return ctx.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
+        return db.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
     },
 
-    comments(parent: any, args: any, ctx: ICtx, info: any) {
+    comments(parent: any, args: any, { db }: IDbCtx, info: any) {
 
         if (!args.query) {
-            return ctx.comments;
+            return db.comments;
         }
 
         const query = args.query.toLowerCase();
 
-        return ctx.comments.filter((comment: IComment) => comment.text.toLowerCase().includes(query));
+        return db.comments.filter((comment: IComment) => comment.text.toLowerCase().includes(query));
     },
 
     me() {

@@ -1,13 +1,13 @@
-import { IComment, ICommentArgs, ICtx, IPost, IPostArgs, IUser, IUserArgs } from "../interfaces";
+import { IComment, ICommentArgs, IDbCtx, IPost, IPostArgs, IUpdateUser, IUser, IUserArgs } from "../interfaces";
 
 import uuidv4 from "uuid/v4";
 
 export const Mutation = {
-    createUser(parent: any, args: IUserArgs, ctx: ICtx, info: any) {
+    createUser(parent: any, args: IUserArgs, { db }: IDbCtx, info: any) {
 
         const data: IUser = args.data;
 
-        const emailTaken: boolean = ctx.users.some((user) => user.email === data.email);
+        const emailTaken: boolean = db.users.some((user) => user.email === data.email);
 
         if (emailTaken) {
             throw new Error("Email has already been taken.");
@@ -29,29 +29,29 @@ export const Mutation = {
             ...data
         };
 
-        ctx.users.push(user);
+        db.users.push(user);
 
         return user;
     },
-    deleteUser(parent: any, args: IUser, ctx: ICtx, info: any) {
-        const userIndex: number = ctx.users.findIndex((user) => user.id === args.id);
+    deleteUser(parent: any, args: IUser, { db }: IDbCtx, info: any) {
+        const userIndex: number = db.users.findIndex((user) => user.id === args.id);
 
         if (userIndex === -1) {
             throw new Error("404: User not found");
         }
 
-        const deletedUsers: IUser[] = ctx.users.splice(userIndex, 1);
+        const deletedUsers: IUser[] = db.users.splice(userIndex, 1);
 
         // Since user is a non-nullable field in comments and posts,
         // we need to also deleted the posts and comments related to the deleted user.
 
-        ctx.posts = ctx.posts.filter((post) => {
+        db.posts = db.posts.filter((post) => {
             const match: boolean = post.author === args.id;
 
             // if the posts was made by the deleted user,
             // delete the comments made by the deleted user.
             if (match) {
-                ctx.comments = ctx.comments.filter((comment) => comment.post !== post.id);
+                db.comments = db.comments.filter((comment) => comment.post !== post.id);
             }
 
             // return the posts that did not match to the user that is being deleted.
@@ -59,15 +59,47 @@ export const Mutation = {
         });
 
         // filter out the comments that belong to the deleted user.
-        ctx.comments = ctx.comments.filter((comment) => comment.author !== args.id);
+        db.comments = db.comments.filter((comment) => comment.author !== args.id);
 
         return deletedUsers[0];
     },
-    createPost(parent: any, args: IPostArgs, ctx: ICtx, info: any) {
+    updateUser(parent: any, args: IUpdateUser, { db }: IDbCtx, info: any) {
+
+        const data = args.data;
+        console.log(db);
+
+        const user = db.users.find((user) => user.id === args.id);
+
+        if (!user) {
+            throw new Error("404: User Not Found!");
+        }
+
+        // Check if the updated email is unique within the database.
+        if (typeof data.email === "string") {
+            const emailTaken = db.users.some((user) => user.email === data.email);
+
+            if (emailTaken) {
+                throw new Error("403: Email Already Taken!");
+            }
+
+            user.email = data.email;
+        }
+
+        if (typeof data.name === "string") {
+            user.name = data.name;
+        }
+
+        if (typeof data.age !== "undefined") {
+            user.age = data.age;
+        }
+
+        return user;
+    },
+    createPost(parent: any, args: IPostArgs, { db }: IDbCtx, info: any) {
 
         const data: IPost = args.data;
 
-        const userExists: boolean = ctx.users.some((user) => user.id === data.author);
+        const userExists: boolean = db.users.some((user) => user.id === data.author);
 
         if (!userExists) {
             throw new Error("404: User not found");
@@ -78,30 +110,30 @@ export const Mutation = {
             ...data
         };
 
-        ctx.posts.push(post);
+        db.posts.push(post);
 
         return post;
     },
-    deletePost(parent: any, args: IPost, ctx: ICtx, info: any) {
-        const postIndex: number = ctx.posts.findIndex((post) => post.id === args.id);
+    deletePost(parent: any, args: IPost, { db }: IDbCtx, info: any) {
+        const postIndex: number = db.posts.findIndex((post) => post.id === args.id);
 
         if (postIndex === -1) {
             throw new Error("404: Post Not Found");
         }
 
-        const deletedPosts: IPost[] = ctx.posts.splice(postIndex, 1);
+        const deletedPosts: IPost[] = db.posts.splice(postIndex, 1);
 
         // Delete the comments associated to that post.
-        ctx.comments = ctx.comments.filter((comment) => comment.post !== args.id);
+        db.comments = db.comments.filter((comment) => comment.post !== args.id);
 
         return deletedPosts[0];
     },
-    createComment(parent: any, args: ICommentArgs, ctx: ICtx, info: any) {
+    createComment(parent: any, args: ICommentArgs, { db }: IDbCtx, info: any) {
 
         const data: IComment = args.data;
 
-        const userExists: boolean = ctx.users.some((user) => user.id === data.author);
-        const postExists: boolean = ctx.posts.some((post) => post.id === data.post && post.published);
+        const userExists: boolean = db.users.some((user) => user.id === data.author);
+        const postExists: boolean = db.posts.some((post) => post.id === data.post && post.published);
 
         if (!userExists || !postExists) {
             throw new Error("404: User or post not found");
@@ -112,18 +144,18 @@ export const Mutation = {
             ...data
         };
 
-        ctx.comments.push(comment);
+        db.comments.push(comment);
 
         return comment;
     },
-    deleteComment(parent: any, args: IComment, ctx: ICtx, info: any) {
-        const commentIndex: number = ctx.comments.findIndex((comment) => comment.id === args.id);
+    deleteComment(parent: any, args: IComment, { db }: IDbCtx, info: any) {
+        const commentIndex: number = db.comments.findIndex((comment) => comment.id === args.id);
 
         if (commentIndex === -1) {
             throw new Error("404: Comment Not Found!");
         }
 
-        const deletedComments = ctx.comments.splice(commentIndex, 1);
+        const deletedComments = db.comments.splice(commentIndex, 1);
 
         return deletedComments[0];
     }

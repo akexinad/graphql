@@ -1,4 +1,25 @@
 export const db = {
+  users:
+  [
+      {
+          id: "1",
+          name: "fellini",
+          email: "fellini@ex.it",
+          age: 29
+      },
+      {
+          id: "2",
+          name: "benigni",
+          email: "benigni@ex.it",
+          age: 44
+      },
+      {
+          id: "3",
+          name: "pasolini",
+          email: "pasolini@ex.it",
+          age: null
+      }
+  ],
   posts:
   [
       {
@@ -49,27 +70,6 @@ export const db = {
         body: "Do excepteur commodo ipsum nulla.",
         published: true,
         author: "3"
-      }
-  ],
-  users:
-  [
-      {
-          id: "1",
-          name: "fellini",
-          email: "fellini@ex.it",
-          age: 29
-      },
-      {
-          id: "2",
-          name: "benigni",
-          email: "benigni@ex.it",
-          age: 44
-      },
-      {
-          id: "3",
-          name: "pasolini",
-          email: "pasolini@ex.it",
-          age: null
       }
   ],
   comments:
