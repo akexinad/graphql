@@ -1,8 +1,8 @@
-import { IComment, ICommentSub, IGqlCtx, IPost } from "../interfaces";
+import { IComment, ICommentSub, IGQLCtx, IPost } from "../interfaces";
 
 export const Subscription = {
     comment: {
-        subscribe(parent: any, args: ICommentSub, { db, pubsub }: IGqlCtx, info: any): AsyncIterator<IComment> {
+        subscribe(parent: any, args: ICommentSub, { db, pubsub }: IGQLCtx, info: any): AsyncIterator<IComment> {
             const post = db.posts.find((post) => post.id === args.postId && post.published);
 
             if (!post) {
@@ -13,12 +13,13 @@ export const Subscription = {
         }
     },
     post: {
-        subscribe(parent: any, args: any, { db, pubsub }: IGqlCtx, info: any): AsyncIterator<IPost> {
+        subscribe(parent: any, args: any, { db, pubsub }: IGQLCtx, info: any): AsyncIterator<IPost> {
             const posts = db.posts;
+            const POST_CHANNEL = "post";
 
-            pubsub.publish("posts", { posts });
+            pubsub.publish(POST_CHANNEL, { posts });
 
-            return pubsub.asyncIterator("posts");
+            return pubsub.asyncIterator(POST_CHANNEL);
         }
     }
 };

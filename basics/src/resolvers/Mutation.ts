@@ -1,9 +1,14 @@
-import { IComment, ICommentArgs, IGqlCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
+import { IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
 
 import uuidv4 from "uuid/v4";
 
+const POST_CHANNEL = "post";
+const CREATED = "CREATED";
+const UPDATED = "UPDATED";
+const DELETED = "DELETED";
+
 export const Mutation = {
-    createUser(parent: any, args: IUserArgs, { db }: IGqlCtx, info: any): IUser {
+    createUser(parent: any, args: IUserArgs, { db }: IGQLCtx, info: any): IUser {
 
         const data: IUser = args.data;
 
@@ -33,7 +38,7 @@ export const Mutation = {
 
         return user;
     },
-    deleteUser(parent: any, args: IUser, { db }: IGqlCtx, info: any): IUser {
+    deleteUser(parent: any, args: IUser, { db }: IGQLCtx, info: any): IUser {
         const userIndex: number = db.users.findIndex((user) => user.id === args.id);
 
         if (userIndex === -1) {
@@ -63,7 +68,7 @@ export const Mutation = {
 
         return deletedUsers[0];
     },
-    updateUser(parent: any, args: IUpdateUser, { db }: IGqlCtx, info: any): IUser {
+    updateUser(parent: any, args: IUpdateUser, { db }: IGQLCtx, info: any): IUser {
 
         const data = args.data;
 
@@ -94,7 +99,7 @@ export const Mutation = {
 
         return user;
     },
-    createPost(parent: any, args: IPostArgs, { db, pubsub }: IGqlCtx, info: any): IPost {
+    createPost(parent: any, args: IPostArgs, { db, pubsub }: IGQLCtx, info: any): IPost {
 
         const data: IPost = args.data;
 
@@ -112,28 +117,44 @@ export const Mutation = {
         db.posts.push(post);
 
         if (post.published) {
-            pubsub.publish("posts", { post });
+            pubsub.publish(POST_CHANNEL, {
+                post: {
+                    mutation: CREATED,
+                    data: post
+                }
+            });
         }
 
         return post;
     },
-    deletePost(parent: any, args: IPost, { db }: IGqlCtx, info: any): IPost {
+    deletePost(parent: any, args: IPost, { pubsub, db }: IGQLCtx, info: any): IPost {
         const postIndex: number = db.posts.findIndex((post) => post.id === args.id);
 
         if (postIndex === -1) {
             throw new Error("404: Post Not Found");
         }
 
-        const deletedPosts: IPost[] = db.posts.splice(postIndex, 1);
+        const [ deletedPost ]: IPost[] = db.posts.splice(postIndex, 1);
 
         // Delete the comments associated to that post.
         db.comments = db.comments.filter((comment) => comment.post !== args.id);
 
-        return deletedPosts[0];
+        // ensure that we don't publish unpublished posts.
+        if (deletedPost.published) {
+            pubsub.publish(POST_CHANNEL, {
+                post: {
+                    mutation: DELETED,
+                    data: deletedPost
+                }
+            });
+        }
+
+        return deletedPost;
     },
-    updatePost(parent: any, args: IUpdatePost, { db }: IGqlCtx, info: any): IPost {
+    updatePost(parent: any, args: IUpdatePost, { pubsub, db }: IGQLCtx, info: any): IPost {
         const data = args.data;
         const post = db.posts.find((post) => post.id === args.id);
+        const originalPost = { ...post };
 
         if (!post) {
             throw new Error("404: Post Not Found!");
@@ -149,11 +170,41 @@ export const Mutation = {
 
         if (typeof data.published === "boolean") {
             post.published = data.published;
+
+            // Check if the post went from published to unpublished so we can send out a DELETED mutation.
+            if (originalPost.published && !post.published) {
+                // post was published and is now unpublished => DELETED
+                pubsub.publish(POST_CHANNEL, {
+                    post: {
+                        mutation: DELETED,
+                        // publishing the original just in case the author decided to make changes before unpublishing the post.
+                        data: originalPost
+                    }
+                });
+
+            } else if (!originalPost.published && post.published) {
+                // post was unpublished and is now published => CREATED
+                pubsub.publish(POST_CHANNEL, {
+                    post: {
+                        mutation: CREATED,
+                        data: post
+                    }
+                });
+
+            }
+        } else if (post.published) {
+            // if there are any other changes apart from being published/unpublished => UPDATED
+            pubsub.publish(POST_CHANNEL, {
+                post: {
+                    mutation: UPDATED,
+                    data: post
+                }
+            });
         }
 
         return post;
     },
-    createComment(parent: any, args: ICommentArgs, { db, pubsub }: IGqlCtx, info: any): IComment {
+    createComment(parent: any, args: ICommentArgs, { db, pubsub }: IGQLCtx, info: any): IComment {
 
         const data: IComment = args.data;
 
@@ -175,7 +226,7 @@ export const Mutation = {
 
         return comment;
     },
-    updateComment(parent: any, args: IUpdateComment, { db }: IGqlCtx, info: any): IComment {
+    updateComment(parent: any, args: IUpdateComment, { db }: IGQLCtx, info: any): IComment {
         const data = args.data;
         const comment = db.comments.find((comment) => comment.id === args.id);
 
@@ -189,7 +240,7 @@ export const Mutation = {
 
         return comment;
     },
-    deleteComment(parent: any, args: IComment, { db }: IGqlCtx, info: any): IComment {
+    deleteComment(parent: any, args: IComment, { db }: IGQLCtx, info: any): IComment {
         const commentIndex: number = db.comments.findIndex((comment) => comment.id === args.id);
 
         if (commentIndex === -1) {

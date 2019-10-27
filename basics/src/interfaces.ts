@@ -24,7 +24,7 @@ export interface IComment {
     post: IPost["id"];
 }
 
-export interface IGqlCtx {
+export interface IGQLCtx {
     db: {
         users: IUser[];
         posts: IPost[];
