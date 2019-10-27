@@ -1,7 +1,7 @@
 import { IComment, IGqlCtx, IPost, IUser } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { db }: IGqlCtx, info: any) {
+    users(parent: any, args: any, { db }: IGqlCtx, info: any): IUser[] {
         if (!args.query) {
             return db.users;
         }
@@ -9,7 +9,7 @@ export const Query = {
         return db.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
     },
 
-    posts(parent: any, args: any, { db }: IGqlCtx, info: any) {
+    posts(parent: any, args: any, { db }: IGqlCtx, info: any): IPost[] {
         if (!args.query) {
             return db.posts;
         }
@@ -19,7 +19,7 @@ export const Query = {
         return db.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
     },
 
-    comments(parent: any, args: any, { db }: IGqlCtx, info: any) {
+    comments(parent: any, args: any, { db }: IGqlCtx, info: any): IComment[] {
 
         if (!args.query) {
             return db.comments;
@@ -30,7 +30,7 @@ export const Query = {
         return db.comments.filter((comment: IComment) => comment.text.toLowerCase().includes(query));
     },
 
-    me() {
+    me(): IUser {
         return {
             id: "123098",
             name: "fellini",
@@ -38,6 +38,7 @@ export const Query = {
         };
     },
 
+    // tslint:disable-next-line: typedef
     myPost() {
         return {
             id: "123456",
