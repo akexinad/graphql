@@ -1,8 +1,8 @@
+import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
 import { IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
 
 import uuidv4 from "uuid/v4";
 
-const POST_CHANNEL = "post";
 const CREATED = "CREATED";
 const UPDATED = "UPDATED";
 const DELETED = "DELETED";
@@ -222,11 +222,16 @@ export const Mutation = {
 
         db.comments.push(comment);
 
-        pubsub.publish(`comment ${ data.post }`, { comment });
+        pubsub.publish(COMMENT_CHANNEL(data.post), {
+            comment: {
+                mutation: CREATED,
+                data: comment
+            }
+        });
 
         return comment;
     },
-    updateComment(parent: any, args: IUpdateComment, { db }: IGQLCtx, info: any): IComment {
+    updateComment(parent: any, args: IUpdateComment, { pubsub, db }: IGQLCtx, info: any): IComment {
         const data = args.data;
         const comment = db.comments.find((comment) => comment.id === args.id);
 
@@ -238,17 +243,31 @@ export const Mutation = {
             comment.text = data.text;
         }
 
+        pubsub.publish(COMMENT_CHANNEL(comment.post), {
+            comment: {
+                mutation: UPDATED,
+                data: comment
+            }
+        });
+
         return comment;
     },
-    deleteComment(parent: any, args: IComment, { db }: IGQLCtx, info: any): IComment {
+    deleteComment(parent: any, args: IComment, { pubsub, db }: IGQLCtx, info: any): IComment {
         const commentIndex: number = db.comments.findIndex((comment) => comment.id === args.id);
 
         if (commentIndex === -1) {
             throw new Error("404: Comment Not Found!");
         }
 
-        const deletedComments = db.comments.splice(commentIndex, 1);
+        const [ deletedComment ] = db.comments.splice(commentIndex, 1);
 
-        return deletedComments[0];
+        pubsub.publish(COMMENT_CHANNEL(deletedComment.post), {
+            comment: {
+                mutation: DELETED,
+                data: deletedComment
+            }
+        });
+
+        return deletedComment;
     }
 };

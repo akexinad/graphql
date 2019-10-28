@@ -1,3 +1,4 @@
+import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
 import { IComment, ICommentSub, IGQLCtx, IPost } from "../interfaces";
 
 export const Subscription = {
@@ -9,13 +10,12 @@ export const Subscription = {
                 throw new Error("404: Post Not Found");
             }
 
-            return pubsub.asyncIterator(`comment ${ args.postId }`);
+            return pubsub.asyncIterator(COMMENT_CHANNEL(post.id));
         }
     },
     post: {
         subscribe(parent: any, args: any, { db, pubsub }: IGQLCtx, info: any): AsyncIterator<IPost> {
             const posts = db.posts;
-            const POST_CHANNEL = "post";
 
             pubsub.publish(POST_CHANNEL, { posts });
 
