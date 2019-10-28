@@ -59,8 +59,8 @@ NOTE: When querying data within graphql, you need to be specific down to the par
 
 
 
-MUTUTATION
-==========
+MUTUTATIONS
+===========
 
 - The graphql mutation is an operation allows us to create, update and delete data.
 
@@ -71,3 +71,25 @@ THE INPUT TYPE
 ==============
 
 - Every variable declared in the input can ONLY be a scalar type, you cannot use a custom type.
+
+
+
+
+PRISMA
+======
+
+- There are 3 ways to connect our DB to our database:
+    - 1. NATIVE DRIVERS: This is a very bare bones implementations that does not include abilities to migrate, validate data or 
+            map our models and their relationships and be able to reflect that in our data.
+    - 2. OBJECT RELATION MAPPING: This implementation is a mix of native drivers along with the nice to have features explained above. Examples of ORM's
+            are SQLize and MONGOOSE if you are using an SQL or MONGO database respectvely.
+
+- PRISMA IS ALSO AN ORM THAT IS DATABASE AGNOSTIC. So you can use MySQL, POSTGRESQL and MONGO.
+
+- PRISMA 'wraps up' our DB and exposes it as a GraphQL API.
+- Therefore, our NODE.js backend can read and write from the DB with GraphQL.
+    - If the server wants to read data, it sends out a GraphQL query, and if it wants to create update or delete data, it sends off a GraphQL mutation, and If
+        it wants to watch for updates, it sends off a GraphQL subscription.
+
+- So what does the server do?
+    - The server handles small but very important tasks such as USER AUTHENTICATION and DATA AUTHORISATION.
