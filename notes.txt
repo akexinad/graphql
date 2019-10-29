@@ -80,7 +80,8 @@ PRISMA
 
 - There are 3 ways to connect our DB to our database:
     - 1. NATIVE DRIVERS: This is a very bare bones implementations that does not include abilities to migrate, validate data or 
-            map our models and their relationships and be able to reflect that in our data.
+            map our models and their relationships and be able to reflect that in our data. This means that we would have to write SQL code
+            ourselves to make queries to the database.
     - 2. OBJECT RELATION MAPPING: This implementation is a mix of native drivers along with the nice to have features explained above. Examples of ORM's
             are SQLize and MONGOOSE if you are using an SQL or MONGO database respectvely.
 
@@ -93,3 +94,21 @@ PRISMA
 
 - So what does the server do?
     - The server handles small but very important tasks such as USER AUTHENTICATION and DATA AUTHORISATION.
+
+
+
+
+PRISMA WINDOWS SETUP
+====================
+
+- First we need to setup a POSTGRESQL database via HEROKU.
+- Create a new app via HEROKU.
+- Go to the 'overview' tab and click on 'configure add-ons' and search for 'heroku postgres'.
+- Choose the free version and click 'provision'
+- Click on the new add-on.
+- Click on settings > View Credentials
+- THESE ARE THE CREDS THAT WE NEED.
+
+- NOW WE CAN INSTALL PGADMIN
+    -  PGAdmin is a Postgres gui.
+    - 
