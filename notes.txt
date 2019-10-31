@@ -117,3 +117,14 @@ PRISMA WINDOWS SETUP
         - Give it a name
         - Now go to connection and fill out the host, database name, user, and password respectvely.
     - Now start docker and keep it running in the background while we complete the prisma setup.
+
+
+NOTE
+====
+
+- ON WINDOWS ==> you need to change your endpoint in your prisma.yml file from:
+    - http://localhost:4466
+    - to
+    - http://192.168.99.100:4466
+
+- that is, you need to replace 'localhost' with the default machine IP in the docker terminal.
