@@ -128,3 +128,12 @@ NOTE
     - http://192.168.99.100:4466
 
 - that is, you need to replace 'localhost' with the default machine IP in the docker terminal.
+
+
+
+
+PRISMA NOTES
+============
+
+Whenever you make a change to the datamodel, remember to redeploy the app with 'prisma deploy'.
+The @id is a directive and are fields that are managed by prisma.
