@@ -1,5 +1,6 @@
 import { GraphQLServer, PubSub } from "graphql-yoga";
 import { db } from "./db";
+import "./prisma";
 import { Comment } from "./resolvers/Comment";
 import { Mutation } from "./resolvers/Mutation";
 import { Post } from "./resolvers/Post";
