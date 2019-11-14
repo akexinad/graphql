@@ -17,6 +17,12 @@ export interface IPost {
     comments?: IComment[];
 }
 
+export interface IPostForMutation {
+    title?: string;
+    body?: string;
+    published?: boolean;
+}
+
 export interface IComment {
     id: string;
     text: string;

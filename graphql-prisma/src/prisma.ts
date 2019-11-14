@@ -1,5 +1,5 @@
 import { Prisma } from "prisma-binding";
-import { IComment, IPost, IUser } from "./interfaces";
+import { IComment, IPost, IPostForMutation, IUser } from "./interfaces";
 
 const prisma = new Prisma({
     /*
@@ -11,46 +11,63 @@ const prisma = new Prisma({
     endpoint: "http://192.168.99.100:4466/"
 });
 
-// @ts-ignore
-// prisma.query.users(null, "{ id name email posts { id title body } }").then((data: IUser) => {
-//     console.log(JSON.stringify(data, undefined, 2));
-// });
+// const createPostForUser = async (authorId: IUser["id"], data: IPostForMutation) => {
 
-// @ts-ignore
-// prisma.query.comments(null, "{ id text author { id name } }").then((data: IComment) => {
-//     console.log(JSON.stringify(data, undefined, 2));
-// });
+//     const post = await prisma.mutation.createPost({
+//         data: {
+//             ...data,
+//             author: {
+//                 connect: {
+//                     id: authorId
+//                 }
+//             }
+//         }
+//     // @ts-ignore
+//     }, "{ id }");
 
-prisma.mutation.createPost({
-    data: {
-        title: "ANOTHER graphql post from prisma",
-        body: "Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.",
-        published: true,
-        author: {
-            connect: {
-                id: "ck2wzinzs001i0796l2ahagca"
-            }
+//     const user = await prisma.query.user({
+//         where: {
+//             id: authorId
+//         }
+//     // @ts-ignore
+//     }, "{ id name email posts { id title published } }");
+
+//     return user;
+// };
+
+// createPostForUser("ck2x0udbx004c0796cgot33gr", {
+//     title: "ASYNC AWAIT graphql post from prisma",
+//     body: "Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.",
+//     published: true,
+// }).then((data: IUser) => {
+//     console.log(JSON.stringify(data, undefined, 2));
+// }).catch((err) => console.error(err));;
+
+const updatePostForUser = async (postId: IPost["id"], data: IPostForMutation) => {
+
+    const post = await prisma.mutation.updatePost({
+        where: {
+            id: postId
+        },
+        data
+    // @ts-ignore
+    }, "{ author { id } }");
+
+    const user = await prisma.query.user({
+        where: {
+            id: post.author.id
         }
-    }
     // @ts-ignore
-}, "{ id title body published author { id name email } }").then((data: IPost) => {
-    console.log(JSON.stringify(data, undefined, 2));
+    }, "{ id name email posts { id title published } }");
 
-    // @ts-ignore
-    return prisma.query.users(null, "{ id name email posts { id title } }");
+    console.log(user);
+
+    return user;
+};
+
+updatePostForUser("ck2z6mn3n001e0796dde7r4i1", {
+    title: "HELLO WORLDUPDATED ASYNC AWAIT graphql post from prisma",
+    published: true,
 }).then((data: IUser) => {
     console.log(JSON.stringify(data, undefined, 2));
-
-    return prisma.mutation.updatePost({
-        where: {
-            id: "ck2z5fk0g000r0796wnrqaumm"
-        },
-        data: {
-            title: "UPDATED graphql post from prisma",
-            published: false
-        }
-    })
-    .then((data: IPost) => {
-        console.log(JSON.stringify(data, undefined, 2));
-    });
-});
+}).catch((err) => console.error(err));
