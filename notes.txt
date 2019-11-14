@@ -135,5 +135,5 @@ NOTE
 PRISMA NOTES
 ============
 
-Whenever you make a change to the datamodel, remember to redeploy the app with 'prisma deploy'.
-The @id is a directive and are fields that are managed by prisma.
+- Whenever you make a change to the datamodel, remember to redeploy the app with 'prisma deploy'.
+- The @id is a directive and are fields that are managed by prisma.
