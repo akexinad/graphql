@@ -137,3 +137,23 @@ PRISMA NOTES
 
 - Whenever you make a change to the datamodel, remember to redeploy the app with 'prisma deploy'.
 - The @id is a directive and are fields that are managed by prisma.
+
+
+
+
+PRISMA AND NODE JS
+==================
+
+- In order to make queries with prisma via node js, we need two packages:
+    - prisma-binding
+    - graphql-cli
+
+- Prisma binding hooks up our our schema to our endpoint running in the docker instance.
+- In order to create the schema, we need to create a file where the schema gets stored.
+    You need to create a graphql.prisma file in the src/generated directory.
+- Next is to set up a prisma instance in the prisma.ts file.
+- The next step is to use graphql cli to get that schema from prisma for us.
+- Once graphql cli has been installed, we create a script in our package json file to fetch that schema for us.
+- Once that is done, run the script, and the prisma.graphql file should be populated.
+- Now you can start making queries in your prisma.ts file.
+
