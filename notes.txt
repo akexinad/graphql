@@ -157,3 +157,19 @@ PRISMA AND NODE JS
 - Once that is done, run the script, and the prisma.graphql file should be populated.
 - Now you can start making queries in your prisma.ts file.
 
+
+
+
+CONFIGURING TYPE RELATIONSHIPS
+==============================
+
+- When deleting data,  we have 2 options:
+    1. SET_NULL
+        -This is the default option, basically it only deletes the datum in question and sets
+            the field on its related data to null.
+        - However, if the field is not nullable, prisma will scream at you.
+    2. CASCADE
+        -This overrides SET_NULL and deletes the datum in question and all of its related data.
+        - This is configured in the data model via directives. You give it a name of your chosing and you tell prisma if you want the delete to be cascade or null
+        - NOTE ON NAMING: Each specific relationship should have only one name.
+            Ex: The relationship between comment to user in the User type and Comment type should have the same name.
