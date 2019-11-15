@@ -11,39 +11,54 @@ const prisma = new Prisma({
     endpoint: "http://192.168.99.100:4466/"
 });
 
-// const createPostForUser = async (authorId: IUser["id"], data: IPostForMutation) => {
+const createPostForUser = async (authorId: IUser["id"], data: IPostForMutation) => {
 
-//     const post = await prisma.mutation.createPost({
-//         data: {
-//             ...data,
-//             author: {
-//                 connect: {
-//                     id: authorId
-//                 }
-//             }
-//         }
-//     // @ts-ignore
-//     }, "{ id }");
+    const userExists = await prisma.exists.User({
+        id: authorId
+    });
 
-//     const user = await prisma.query.user({
-//         where: {
-//             id: authorId
-//         }
-//     // @ts-ignore
-//     }, "{ id name email posts { id title published } }");
+    if (!userExists) {
+        throw new Error("404: User not found!");
+    }
 
-//     return user;
-// };
+    const post = await prisma.mutation.createPost({
+        data: {
+            ...data,
+            author: {
+                connect: {
+                    id: authorId
+                }
+            }
+        }
+    // @ts-ignore
+    }, "{ id author { id name email posts { id title published } } }");
 
-// createPostForUser("ck2x0udbx004c0796cgot33gr", {
-//     title: "ASYNC AWAIT graphql post from prisma",
+    return post.author;
+};
+
+// createPostForUser("ck2pvikub000c079606cgnjbn", {
+//     title: "USER EXISTS AGAIN graphql post from prisma",
 //     body: "Your bones don't break, mine do. That's clear. Your cells react to bacteria and viruses differently than mine. You don't get sick, I do. That's also clear. But for some reason, you and I react the exact same way to water. We swallow it too fast, we choke. We get some in our lungs, we drown. However unreal it may seem, we are connected, you and I. We're on the same curve, just on opposite ends.",
 //     published: true,
 // }).then((data: IUser) => {
 //     console.log(JSON.stringify(data, undefined, 2));
-// }).catch((err) => console.error(err));;
+// }).catch((err) => console.error(err));
+
+// prisma.exists.Comment({
+//     id: "ck2x0yeoe004t0796le8lhpkr"
+// }).then((exists) => {
+//     console.log(exists);
+// });
 
 const updatePostForUser = async (postId: IPost["id"], data: IPostForMutation) => {
+
+    const postExists = await prisma.exists.Post({
+        id: postId
+    });
+
+    if (!postExists) {
+        throw new Error("404: Post not found!");
+    }
 
     const post = await prisma.mutation.updatePost({
         where: {
@@ -51,23 +66,14 @@ const updatePostForUser = async (postId: IPost["id"], data: IPostForMutation) =>
         },
         data
     // @ts-ignore
-    }, "{ author { id } }");
+    }, "{ author { id name email posts { id title published } } }");
 
-    const user = await prisma.query.user({
-        where: {
-            id: post.author.id
-        }
-    // @ts-ignore
-    }, "{ id name email posts { id title published } }");
-
-    console.log(user);
-
-    return user;
+    return post.author;
 };
 
-updatePostForUser("ck2z6mn3n001e0796dde7r4i1", {
-    title: "HELLO WORLDUPDATED ASYNC AWAIT graphql post from prisma",
-    published: true,
+updatePostForUser("ck2z58obg00080796twv2rkjy", {
+    title: "UPDATED POST EXISTS ASYNC AWAIT graphql post from prisma",
+    published: false,
 }).then((data: IUser) => {
     console.log(JSON.stringify(data, undefined, 2));
 }).catch((err) => console.error(err));
