@@ -1,6 +1,6 @@
 import { GraphQLServer, PubSub } from "graphql-yoga";
 import { db } from "./db";
-import "./prisma";
+import { prisma } from "./prisma";
 import { Comment } from "./resolvers/Comment";
 import { Mutation } from "./resolvers/Mutation";
 import { Post } from "./resolvers/Post";
@@ -27,7 +27,7 @@ const server: GraphQLServer = new GraphQLServer({
     },
     context: {
         db,
-        pubsub
+        pubsub,
     }
 });
 

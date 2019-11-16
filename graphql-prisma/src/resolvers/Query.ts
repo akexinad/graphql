@@ -1,15 +1,21 @@
 import { IComment, IGQLCtx, IPost, IUser } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { db }: IGQLCtx, info: any): IUser[] {
+    users(_: any, args: any, { db, prisma }: IGQLCtx, info: IUser): IUser[] {
+
+        // the info argument contains all of the information regarding the user query operation.
+
+        // return prisma.query.users(null, info);
+
         if (!args.query) {
             return db.users;
         }
 
         return db.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
+
     },
 
-    posts(parent: any, args: any, { db }: IGQLCtx, info: any): IPost[] {
+    posts(_: any, args: any, { db }: IGQLCtx, __: any): IPost[] {
         if (!args.query) {
             return db.posts;
         }
@@ -19,7 +25,7 @@ export const Query = {
         return db.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
     },
 
-    comments(parent: any, args: any, { db }: IGQLCtx, info: any): IComment[] {
+    comments(_: any, args: any, { db }: IGQLCtx, __: any): IComment[] {
 
         if (!args.query) {
             return db.comments;
@@ -30,6 +36,8 @@ export const Query = {
         return db.comments.filter((comment: IComment) => comment.text.toLowerCase().includes(query));
     },
 
+    /*
+
     me(): IUser {
         return {
             id: "123098",
@@ -37,6 +45,8 @@ export const Query = {
             email: "fellini@rome.it"
         };
     },
+
+    */
 
     // tslint:disable-next-line: typedef
     myPost() {

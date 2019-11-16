@@ -1,11 +1,31 @@
 import { PubSub } from "graphql-yoga";
+import { Prisma } from "prisma-binding";
 
 export interface IUser {
     id: string;
-    name: string;
-    email: string;
+    username?: string;
+    name?: string;
+    email?: string;
     age?: number;
+    reviews?: IReview[];
+    comments?: IComment[];
     posts?: IPost[];
+}
+
+export interface IReview {
+    id: string;
+    text: string;
+    rating: number;
+    book: IBook;
+    author?: IUser;
+}
+
+export interface IBook {
+    id: string;
+    title: string;
+    author: string;
+    isbn: string;
+    reviews?: IReview[];
 }
 
 export interface IPost {
@@ -37,6 +57,7 @@ export interface IGQLCtx {
         comments: IComment[];
     };
     pubsub: PubSub;
+    prisma: Prisma;
 }
 
 export interface IUserArgs {
