@@ -173,3 +173,12 @@ CONFIGURING TYPE RELATIONSHIPS
         - This is configured in the data model via directives. You give it a name of your chosing and you tell prisma if you want the delete to be cascade or null
         - NOTE ON NAMING: Each specific relationship should have only one name.
             Ex: The relationship between comment to user in the User type and Comment type should have the same name.
+
+
+
+
+DEPLOYING A NEW PROJECT
+=======================
+
+- When deploying a second project, we do not need the docker file as we can have multiple projects in the same container.
+- However, what we need to change is the endpoint where our new service will be hosted. Now we will have two schemas in the one db hosted by heroku.
