@@ -1,2 +1,2 @@
-endpoint: http://192.168.99.100:4466/prisma/dev
+endpoint: http://192.168.99.100:4466/blog/dev
 datamodel: datamodel.prisma
