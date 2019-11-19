@@ -1,15 +1,19 @@
 import { PubSub } from "graphql-yoga";
 import { Prisma } from "prisma-binding";
 
-export interface IUser {
+export interface IBlogUser {
     id: string;
-    username?: string;
-    name?: string;
-    email?: string;
-    age?: number;
-    reviews?: IReview[];
-    comments?: IComment[];
-    posts?: IPost[];
+    name: string;
+    email: string;
+    age: number;
+    comments: IComment[];
+    posts: IPost[];
+}
+
+export interface IBookReviewsUser {
+    id: string;
+    username: string;
+    reviews: string[];
 }
 
 export interface IReview {
@@ -17,7 +21,7 @@ export interface IReview {
     text: string;
     rating: number;
     book: IBook;
-    author?: IUser;
+    author?: IBlogUser;
 }
 
 export interface IBook {
@@ -33,7 +37,7 @@ export interface IPost {
     title: string;
     body: string;
     published: boolean;
-    author: IUser["id"];
+    author: IBlogUser["id"];
     comments?: IComment[];
 }
 
@@ -46,13 +50,13 @@ export interface IPostForMutation {
 export interface IComment {
     id: string;
     text: string;
-    author: IUser["id"];
+    author: IBlogUser["id"];
     post: IPost["id"];
 }
 
 export interface IGQLCtx {
     db: {
-        users: IUser[];
+        users: IBlogUser[];
         posts: IPost[];
         comments: IComment[];
     };
@@ -61,12 +65,12 @@ export interface IGQLCtx {
 }
 
 export interface IUserArgs {
-    data: IUser;
+    data: IBlogUser;
 }
 
 export interface IUpdateUser {
-    id: IUser["id"];
-    data: IUser;
+    id: IBlogUser["id"];
+    data: IBlogUser;
 }
 
 export interface IPostArgs {

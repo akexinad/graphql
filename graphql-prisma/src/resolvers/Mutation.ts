@@ -1,5 +1,5 @@
 import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
-import { IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUser, IUserArgs } from "../interfaces";
+import { IBlogUser, IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
 
 import uuidv4 from "uuid/v4";
 
@@ -8,9 +8,9 @@ const UPDATED = "UPDATED";
 const DELETED = "DELETED";
 
 export const Mutation = {
-    createUser(parent: any, args: IUserArgs, { db }: IGQLCtx, info: any): IUser {
+    createUser(parent: any, args: IUserArgs, { db }: IGQLCtx, info: any): IBlogUser {
 
-        const data: IUser = args.data;
+        const data: IBlogUser = args.data;
 
         const emailTaken: boolean = db.users.some((user) => user.email === data.email);
 
@@ -29,7 +29,7 @@ export const Mutation = {
         }
         */
 
-        const user: IUser = {
+        const user: IBlogUser = {
             id: uuidv4(),
             ...data
         };
@@ -38,14 +38,14 @@ export const Mutation = {
 
         return user;
     },
-    deleteUser(parent: any, args: IUser, { db }: IGQLCtx, info: any): IUser {
+    deleteUser(parent: any, args: IBlogUser, { db }: IGQLCtx, info: any): IBlogUser {
         const userIndex: number = db.users.findIndex((user) => user.id === args.id);
 
         if (userIndex === -1) {
             throw new Error("404: User not found");
         }
 
-        const deletedUsers: IUser[] = db.users.splice(userIndex, 1);
+        const deletedUsers: IBlogUser[] = db.users.splice(userIndex, 1);
 
         // Since user is a non-nullable field in comments and posts,
         // we need to also deleted the posts and comments related to the deleted user.
@@ -68,7 +68,7 @@ export const Mutation = {
 
         return deletedUsers[0];
     },
-    updateUser(parent: any, args: IUpdateUser, { db }: IGQLCtx, info: any): IUser {
+    updateUser(parent: any, args: IUpdateUser, { db }: IGQLCtx, info: any): IBlogUser {
 
         const data = args.data;
 

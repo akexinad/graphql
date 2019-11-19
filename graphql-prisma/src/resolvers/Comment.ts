@@ -1,7 +1,7 @@
-import { IComment, IGQLCtx, IPost, IUser } from "../interfaces";
+import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
 
 export const Comment = {
-    author(parent: IComment, args: any, { db }: IGQLCtx, info: any): IUser {
+    author(parent: IComment, args: any, { db }: IGQLCtx, info: any): IBlogUser {
         return db.users.find((user) => user.id === parent.author);
     },
     post(parent: IComment, args: any, { db }: IGQLCtx, info: any): IPost {

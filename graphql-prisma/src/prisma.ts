@@ -1,15 +1,17 @@
 import { Prisma } from "prisma-binding";
-import { IComment, IPost, IPostForMutation, IUser } from "./interfaces";
+import { IBlogUser, IComment, IPost, IPostForMutation } from "./interfaces";
 
-export const prisma = new Prisma({
+const prisma = new Prisma({
     /*
     This file is initially configured via the .graphqlconfig file that you
     need to write, telling prisma where to store the typeDefs.
     */
     typeDefs: "src/generated/prisma.graphql",
     // if your on windows you have to provide the IP address for the endpoint.
-    endpoint: "http://192.168.99.100:4477/"
+    endpoint: "http://192.168.99.100:4466/blog/dev"
 });
+
+export default prisma;
 
 /*
 

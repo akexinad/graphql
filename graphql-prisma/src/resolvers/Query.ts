@@ -1,21 +1,31 @@
-import { IComment, IGQLCtx, IPost, IUser } from "../interfaces";
+import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
 
 export const Query = {
-    users(_: any, args: any, { db, prisma }: IGQLCtx, info: IUser): IUser[] {
+    users(parent: any, args: any, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser[]> {
 
-        // the info argument contains all of the information regarding the user query operation.
+        /*
+        you can pass three distinct values for the second argument:
+        1. Nothing
+        2. A string, which is what we were doing in the prisma file
+        3. An object
+        */
 
-        // return prisma.query.users(null, info);
+        return prisma.query.users(null, info);
 
+        /*
         if (!args.query) {
             return db.users;
         }
 
         return db.users.filter((user: IUser) => user.name.toLowerCase().includes(args.query.toLowerCase()));
-
+        */
     },
 
-    posts(_: any, args: any, { db }: IGQLCtx, __: any): IPost[] {
+    posts(parent: any, args: any, { prisma }: IGQLCtx, info: any): Promise<IPost[]> {
+
+        return prisma.query.posts(null, info);
+
+        /*
         if (!args.query) {
             return db.posts;
         }
@@ -23,9 +33,10 @@ export const Query = {
         const query = args.query.toLowerCase();
 
         return db.posts.filter((post: IPost) => post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query));
+        */
     },
 
-    comments(_: any, args: any, { db }: IGQLCtx, __: any): IComment[] {
+    comments(parent: any, args: any, { db }: IGQLCtx, info: any): IComment[] {
 
         if (!args.query) {
             return db.comments;
