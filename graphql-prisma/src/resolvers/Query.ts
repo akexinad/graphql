@@ -3,14 +3,28 @@ import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
 export const Query = {
     users(parent: any, args: any, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser[]> {
 
+        const operationArguments = {
+        };
+
+        if (args.query) {
+            // @ts-ignore
+            operationArguments.where = {
+                OR: [{
+                    name_contains: args.query
+                }, {
+                    email_contains: args.query
+                }]
+            };
+        }
+
         /*
-        you can pass three distinct values for the second argument:
+        Below you can pass three distinct values for the second argument:
         1. Nothing
         2. A string, which is what we were doing in the prisma file
         3. An object
         */
 
-        return prisma.query.users(null, info);
+        return prisma.query.users(operationArguments, info);
 
         /*
         if (!args.query) {
@@ -23,7 +37,20 @@ export const Query = {
 
     posts(parent: any, args: any, { prisma }: IGQLCtx, info: any): Promise<IPost[]> {
 
-        return prisma.query.posts(null, info);
+        const operationArguments = {};
+
+        if (args.query) {
+            // @ts-ignore
+            operationArguments.where = {
+                OR: [{
+                    title_contains: args.query
+                }, {
+                    body_contains: args.query
+                }]
+            };
+        }
+
+        return prisma.query.posts(operationArguments, info);
 
         /*
         if (!args.query) {
