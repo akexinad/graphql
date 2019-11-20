@@ -63,7 +63,20 @@ export const Query = {
         */
     },
 
-    comments(parent: any, args: any, { db }: IGQLCtx, info: any): IComment[] {
+    comments(parent: any, args: any, { prisma }: IGQLCtx, info: any): Promise<IComment[]> {
+
+        const operationArguments = {};
+
+        if (args.query) {
+            // @ts-ignore
+            operationArguments.where = {
+                text_contains: args.query
+            };
+        }
+
+        return prisma.query.comments(operationArguments, info);
+
+        /*
 
         if (!args.query) {
             return db.comments;
@@ -72,6 +85,8 @@ export const Query = {
         const query = args.query.toLowerCase();
 
         return db.comments.filter((comment: IComment) => comment.text.toLowerCase().includes(query));
+
+        */
     },
 
     /*

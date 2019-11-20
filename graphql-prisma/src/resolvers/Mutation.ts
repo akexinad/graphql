@@ -8,7 +8,23 @@ const UPDATED = "UPDATED";
 const DELETED = "DELETED";
 
 export const Mutation = {
-    createUser(parent: any, args: IUserArgs, { db }: IGQLCtx, info: any): IBlogUser {
+    async createUser(parent: any, args: IUserArgs, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser> {
+
+        const emailTaken = await prisma.exists.User({
+            email: args.data.email
+        });
+
+        if (emailTaken) {
+            throw new Error("Email has already been taken.");
+        }
+
+        const user = await prisma.mutation.createUser({
+            data: args.data
+        }, info);
+
+        return user;
+
+        /*
 
         const data: IBlogUser = args.data;
 
@@ -18,7 +34,6 @@ export const Mutation = {
             throw new Error("Email has already been taken.");
         }
 
-        /*
         now we can use the es6 object-rest-spread operator.
 
         const user = {
@@ -27,7 +42,6 @@ export const Mutation = {
             email: args.email,
             age: args.age
         }
-        */
 
         const user: IBlogUser = {
             id: uuidv4(),
@@ -37,8 +51,29 @@ export const Mutation = {
         db.users.push(user);
 
         return user;
+
+        */
     },
-    deleteUser(parent: any, args: IBlogUser, { db }: IGQLCtx, info: any): IBlogUser {
+    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser> {
+
+        const userExists = await prisma.exists.User({
+            id: args.id
+        });
+
+        if (!userExists) {
+            throw new Error("404: User not found");
+        }
+
+        const deletedUser = await prisma.mutation.deleteUser({
+            where: {
+                id: args.id
+            }
+        }, info);
+
+        return deletedUser;
+
+        /*
+
         const userIndex: number = db.users.findIndex((user) => user.id === args.id);
 
         if (userIndex === -1) {
@@ -67,6 +102,8 @@ export const Mutation = {
         db.comments = db.comments.filter((comment) => comment.author !== args.id);
 
         return deletedUsers[0];
+
+        */
     },
     updateUser(parent: any, args: IUpdateUser, { db }: IGQLCtx, info: any): IBlogUser {
 
@@ -126,6 +163,7 @@ export const Mutation = {
         }
 
         return post;
+
     },
     deletePost(parent: any, args: IPost, { pubsub, db }: IGQLCtx, info: any): IPost {
         const postIndex: number = db.posts.findIndex((post) => post.id === args.id);
@@ -134,7 +172,7 @@ export const Mutation = {
             throw new Error("404: Post Not Found");
         }
 
-        const [ deletedPost ]: IPost[] = db.posts.splice(postIndex, 1);
+        const [deletedPost]: IPost[] = db.posts.splice(postIndex, 1);
 
         // Delete the comments associated to that post.
         db.comments = db.comments.filter((comment) => comment.post !== args.id);
@@ -259,7 +297,7 @@ export const Mutation = {
             throw new Error("404: Comment Not Found!");
         }
 
-        const [ deletedComment ] = db.comments.splice(commentIndex, 1);
+        const [deletedComment] = db.comments.splice(commentIndex, 1);
 
         pubsub.publish(COMMENT_CHANNEL(deletedComment.post), {
             comment: {
