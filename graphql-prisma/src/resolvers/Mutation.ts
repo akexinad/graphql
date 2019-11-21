@@ -1,6 +1,7 @@
 import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
 import { IBlogUser, IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
 
+import { GraphQLResolveInfo } from "graphql";
 import uuidv4 from "uuid/v4";
 
 const CREATED = "CREATED";
@@ -8,7 +9,7 @@ const UPDATED = "UPDATED";
 const DELETED = "DELETED";
 
 export const Mutation = {
-    async createUser(parent: any, args: IUserArgs, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser> {
+    async createUser(parent: any, args: IUserArgs, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const emailTaken = await prisma.exists.User({
             email: args.data.email
@@ -54,7 +55,7 @@ export const Mutation = {
 
         */
     },
-    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser> {
+    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const userExists = await prisma.exists.User({
             id: args.id
@@ -105,7 +106,16 @@ export const Mutation = {
 
         */
     },
-    updateUser(parent: any, args: IUpdateUser, { db }: IGQLCtx, info: any): IBlogUser {
+    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
+
+        return prisma.mutation.updateUser({
+            where: {
+                id: args.id
+            },
+            data: args.data
+        }, info);
+
+        /*
 
         const data = args.data;
 
@@ -135,8 +145,27 @@ export const Mutation = {
         }
 
         return user;
+
+        */
     },
-    createPost(parent: any, args: IPostArgs, { db, pubsub }: IGQLCtx, info: any): IPost {
+    async createPost(parent: any, args: IPostArgs, { prisma, pubsub }: IGQLCtx, info: GraphQLResolveInfo): Promise<IPost> {
+
+        const data = args.data;
+
+        return prisma.mutation.createPost({
+            data: {
+                title: data.title,
+                body: data.body,
+                published: data.published,
+                author: {
+                    connect: {
+                        id: data.author
+                    }
+                }
+            }
+        }, info);
+
+        /*
 
         const data: IPost = args.data;
 
@@ -163,6 +192,8 @@ export const Mutation = {
         }
 
         return post;
+
+        */
 
     },
     deletePost(parent: any, args: IPost, { pubsub, db }: IGQLCtx, info: any): IPost {

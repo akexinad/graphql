@@ -1,7 +1,8 @@
+import { GraphQLResolveInfo } from "graphql";
 import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { prisma }: IGQLCtx, info: IBlogUser): Promise<IBlogUser[]> {
+    users(parent: any, args: any, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
         const operationArguments = {
         };

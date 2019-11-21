@@ -182,3 +182,10 @@ DEPLOYING A NEW PROJECT
 
 - When deploying a second project, we do not need the docker file as we can have multiple projects in the same container.
 - However, what we need to change is the endpoint where our new service will be hosted. Now we will have two schemas in the one db hosted by heroku.
+
+
+
+WHY EVEN USE NODE IF PRISMA DOES SO MUCH ?
+==========================================
+
+- Node will be taking care of data authorization and sanitization, making sure that no one can just create/mutate whatever they want.
