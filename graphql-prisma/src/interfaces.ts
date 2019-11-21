@@ -54,7 +54,7 @@ export interface IComment {
     post: IPost["id"];
 }
 
-export interface IGQLCtx {
+export interface IGraphQLContext {
     db: {
         users: IBlogUser[];
         posts: IPost[];

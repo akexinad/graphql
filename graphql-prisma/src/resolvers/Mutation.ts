@@ -1,7 +1,7 @@
 import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
-import { IBlogUser, IComment, ICommentArgs, IGQLCtx, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
+import { IBlogUser, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
 
-import { GraphQLResolveInfo } from "graphql";
+import { assertSchema, GraphQLResolveInfo } from "graphql";
 import uuidv4 from "uuid/v4";
 
 const CREATED = "CREATED";
@@ -9,7 +9,7 @@ const UPDATED = "UPDATED";
 const DELETED = "DELETED";
 
 export const Mutation = {
-    async createUser(parent: any, args: IUserArgs, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async createUser(parent: any, args: IUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const emailTaken = await prisma.exists.User({
             email: args.data.email
@@ -55,7 +55,7 @@ export const Mutation = {
 
         */
     },
-    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const userExists = await prisma.exists.User({
             id: args.id
@@ -106,7 +106,7 @@ export const Mutation = {
 
         */
     },
-    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         return prisma.mutation.updateUser({
             where: {
@@ -148,18 +148,18 @@ export const Mutation = {
 
         */
     },
-    async createPost(parent: any, args: IPostArgs, { prisma, pubsub }: IGQLCtx, info: GraphQLResolveInfo): Promise<IPost> {
+    async createPost(parent: any, args: IPostArgs, { prisma, pubsub }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
 
-        const data = args.data;
+        const creationData = args.data;
 
         return prisma.mutation.createPost({
             data: {
-                title: data.title,
-                body: data.body,
-                published: data.published,
+                title: creationData.title,
+                body: creationData.body,
+                published: creationData.published,
                 author: {
                     connect: {
-                        id: data.author
+                        id: creationData.author
                     }
                 }
             }
@@ -196,7 +196,16 @@ export const Mutation = {
         */
 
     },
-    deletePost(parent: any, args: IPost, { pubsub, db }: IGQLCtx, info: any): IPost {
+    async deletePost(parent: any, args: IPost, { pubsub, prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+
+        return prisma.mutation.deletePost({
+            where: {
+                id: args.id
+            }
+        }, info);
+
+        /*
+
         const postIndex: number = db.posts.findIndex((post) => post.id === args.id);
 
         if (postIndex === -1) {
@@ -219,8 +228,22 @@ export const Mutation = {
         }
 
         return deletedPost;
+
+        */
     },
-    updatePost(parent: any, args: IUpdatePost, { pubsub, db }: IGQLCtx, info: any): IPost {
+    async updatePost(parent: any, args: IUpdatePost, { pubsub, prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+
+        const updateData = args.data;
+
+        return prisma.mutation.updatePost({
+            where: {
+                id: args.id
+            },
+            data: updateData
+        }, info);
+
+        /*
+
         const data = args.data;
         const post = db.posts.find((post) => post.id === args.id);
         const originalPost = { ...post };
@@ -272,8 +295,30 @@ export const Mutation = {
         }
 
         return post;
+
+        */
     },
-    createComment(parent: any, args: ICommentArgs, { db, pubsub }: IGQLCtx, info: any): IComment {
+    async createComment(parent: any, args: ICommentArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+
+        const creationData = args.data;
+
+        return prisma.mutation.createComment({
+            data: {
+                text: creationData.text,
+                author: {
+                    connect: {
+                        id: creationData.author
+                    }
+                },
+                post: {
+                    connect: {
+                        id: creationData.post
+                    }
+                }
+            }
+        }, info);
+
+        /*
 
         const data: IComment = args.data;
 
@@ -299,8 +344,24 @@ export const Mutation = {
         });
 
         return comment;
+
+        */
     },
-    updateComment(parent: any, args: IUpdateComment, { pubsub, db }: IGQLCtx, info: any): IComment {
+    async updateComment(parent: any, args: IUpdateComment, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+
+        const updateData = args.data;
+
+        return prisma.mutation.updateComment({
+            where: {
+                id: args.id
+            },
+            data: {
+                text: updateData.text
+            }
+        }, info);
+
+        /*
+
         const data = args.data;
         const comment = db.comments.find((comment) => comment.id === args.id);
 
@@ -320,8 +381,19 @@ export const Mutation = {
         });
 
         return comment;
+
+        */
     },
-    deleteComment(parent: any, args: IComment, { pubsub, db }: IGQLCtx, info: any): IComment {
+    async deleteComment(parent: any, args: IComment, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+
+        return prisma.mutation.deleteComment({
+            where: {
+                id: args.id
+            }
+        }, info);
+
+        /*
+
         const commentIndex: number = db.comments.findIndex((comment) => comment.id === args.id);
 
         if (commentIndex === -1) {
@@ -338,5 +410,7 @@ export const Mutation = {
         });
 
         return deletedComment;
+
+        */
     }
 };

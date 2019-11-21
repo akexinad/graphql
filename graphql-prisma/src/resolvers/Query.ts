@@ -1,8 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
-import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
+import { IBlogUser, IComment, IGraphQLContext, IPost } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { prisma }: IGQLCtx, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
+    users(parent: any, args: any, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
         const operationArguments = {
         };
@@ -36,7 +36,7 @@ export const Query = {
         */
     },
 
-    posts(parent: any, args: any, { prisma }: IGQLCtx, info: any): Promise<IPost[]> {
+    posts(parent: any, args: any, { prisma }: IGraphQLContext, info: any): Promise<IPost[]> {
 
         const operationArguments = {};
 
@@ -64,7 +64,7 @@ export const Query = {
         */
     },
 
-    comments(parent: any, args: any, { prisma }: IGQLCtx, info: any): Promise<IComment[]> {
+    comments(parent: any, args: any, { prisma }: IGraphQLContext, info: any): Promise<IComment[]> {
 
         const operationArguments = {};
 

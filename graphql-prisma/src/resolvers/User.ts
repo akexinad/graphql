@@ -1,4 +1,4 @@
-import { IBlogUser, IComment, IGQLCtx, IPost } from "../interfaces";
+import { IBlogUser, IComment, IGraphQLContext, IPost } from "../interfaces";
 
 export const User = {
 
