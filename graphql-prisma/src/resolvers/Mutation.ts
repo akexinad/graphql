@@ -25,6 +25,16 @@ export const Mutation = {
         return user;
 
     },
+    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
+
+        return prisma.mutation.updateUser({
+            where: {
+                id: args.id
+            },
+            data: args.data
+        }, info);
+
+    },
     async deleteUser(parent: any, args: IBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const userExists = await prisma.exists.User({
@@ -44,17 +54,7 @@ export const Mutation = {
         return deletedUser;
 
     },
-    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
-
-        return prisma.mutation.updateUser({
-            where: {
-                id: args.id
-            },
-            data: args.data
-        }, info);
-
-    },
-    async createPost(parent: any, args: IPostArgs, { prisma, pubsub }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+    async createPost(parent: any, args: IPostArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
 
         const creationData = args.data;
 
@@ -72,16 +72,7 @@ export const Mutation = {
         }, info);
 
     },
-    async deletePost(parent: any, args: IPost, { pubsub, prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
-
-        return prisma.mutation.deletePost({
-            where: {
-                id: args.id
-            }
-        }, info);
-
-    },
-    async updatePost(parent: any, args: IUpdatePost, { pubsub, prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+    async updatePost(parent: any, args: IUpdatePost, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
 
         const updateData = args.data;
 
@@ -90,6 +81,15 @@ export const Mutation = {
                 id: args.id
             },
             data: updateData
+        }, info);
+
+    },
+    async deletePost(parent: any, args: IPost, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+
+        return prisma.mutation.deletePost({
+            where: {
+                id: args.id
+            }
         }, info);
 
     },

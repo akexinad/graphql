@@ -90,10 +90,10 @@ enum MutuationType {
 
 type PostSubscriptionPayload {
     mutation: MutuationType!
-    data: Post!
+    node: Post
 }
 
 type CommentSubscriptionPayload {
     mutation: MutuationType!
-    data: Comment!
+    node: Comment
 }

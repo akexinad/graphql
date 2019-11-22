@@ -1,5 +1,4 @@
 import { Prisma } from "prisma-binding";
-import { IBlogUser, IComment, IPost, IPostForMutation } from "./interfaces";
 
 const prisma = new Prisma({
     /*
@@ -8,8 +7,8 @@ const prisma = new Prisma({
     */
     typeDefs: "src/generated/prisma.graphql",
     // if your on windows you have to provide the IP address for the endpoint.
-    endpoint: "http://192.168.99.100:4466/blog/dev"
-    // endpoint: "http://localhost:4466/blog/dev"
+    // endpoint: "http://192.168.99.100:4466/blog/dev"
+    endpoint: "http://localhost:4466/blog/dev"
 });
 
 export default prisma;
