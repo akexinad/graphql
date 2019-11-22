@@ -189,3 +189,18 @@ WHY EVEN USE NODE IF PRISMA DOES SO MUCH ?
 ==========================================
 
 - Node will be taking care of data authorization and sanitization, making sure that no one can just create/mutate whatever they want.
+
+
+
+
+MAKING CHANGES TO MODEL AND SCHEMA
+==================================
+
+Remember that whenever you make changes to the prisma data model, you first need to delete the existing data:
+
+- prisma delete 'or' prisma delete -f OR prisma reset 'for newer versions of prisma'.
+
+Then redeploy.
+
+Then generate a new schema by running npm run get-schema. However, if you have already set up the secret, you will get an error.
+Adding the prisma property on the prismaconfig file will fix as it will tell prisma where to look for the new datamodel
