@@ -65,11 +65,11 @@ export interface IGraphQLContext {
     prisma: Prisma;
 }
 
-export interface IUserArgs {
+export interface IBlogUserArgs {
     data: IBlogUser;
 }
 
-export interface IUpdateUser {
+export interface IUpdateBlogUser {
     id: IBlogUser["id"];
     data: IBlogUser;
 }

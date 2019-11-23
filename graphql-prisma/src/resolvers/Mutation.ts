@@ -1,10 +1,12 @@
 import bcrypt from "bcryptjs";
 import { GraphQLResolveInfo } from "graphql";
 import jwt from "jsonwebtoken";
-import { IAuthPayload, IBlogUser, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
+import { IAuthPayload, IBlogUser, IBlogUserArgs, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateBlogUser, IUpdateComment, IUpdatePost } from "../interfaces";
+
+const JWT_SECRET = "thisisajsonwebtokensecrets9b$7h1sr6gj7h4_9nwj7r9tnu49l7e9r7byh1e97kj111n19sd";
 
 export const Mutation = {
-    async createUser(parent: any, args: IUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
+    async createUser(parent: any, args: IBlogUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
 
         const creationData = args.data;
 
@@ -21,13 +23,15 @@ export const Mutation = {
             }
         });
 
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+
         return {
             user,
-            token: jwt.sign({ userId: user.id }, "jsonwebtokensecret")
+            token
         };
 
     },
-    async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async updateUser(parent: any, args: IUpdateBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         return prisma.mutation.updateUser({
             where: {
@@ -39,14 +43,6 @@ export const Mutation = {
     },
     async deleteUser(parent: any, args: IBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
-        const userExists = await prisma.exists.User({
-            id: args.id
-        });
-
-        if (!userExists) {
-            throw new Error("404: User not found");
-        }
-
         const deletedUser = await prisma.mutation.deleteUser({
             where: {
                 id: args.id
@@ -54,6 +50,34 @@ export const Mutation = {
         }, info);
 
         return deletedUser;
+
+    },
+    async login(parent: any, args: IBlogUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
+
+        const loginData = args.data;
+
+        const existingUser: IBlogUser = await prisma.query.user({
+            where: {
+                email: loginData.email
+            }
+        });
+
+        if (!existingUser) {
+            throw new Error("404: User not found!");
+        }
+
+        const isMatch = await bcrypt.compare(loginData.password, existingUser.password);
+
+        if (!isMatch) {
+            throw new Error("403: Unable to login");
+        }
+
+        const jwtToken = jwt.sign({ userId: existingUser.id }, JWT_SECRET);
+
+        return {
+            user: existingUser,
+            token: jwtToken
+        };
 
     },
     async createPost(parent: any, args: IPostArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
