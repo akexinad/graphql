@@ -1,28 +1,26 @@
-import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
+import bcrypt from "bcryptjs";
+
 import { IBlogUser, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
 
 import { GraphQLResolveInfo } from "graphql";
 
-const CREATED = "CREATED";
-const UPDATED = "UPDATED";
-const DELETED = "DELETED";
-
 export const Mutation = {
     async createUser(parent: any, args: IUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
-        const emailTaken = await prisma.exists.User({
-            email: args.data.email
-        });
+        const creationData = args.data;
 
-        if (emailTaken) {
-            throw new Error("Email has already been taken.");
+        if (creationData.password.length < 8) {
+            throw new Error("Password must be 8 characters or longer.");
         }
 
-        const user = await prisma.mutation.createUser({
-            data: args.data
-        }, info);
+        const hashedPassword = await bcrypt.hash(creationData.password, 10);
 
-        return user;
+        return prisma.mutation.createUser({
+            data: {
+                ...creationData,
+                password: hashedPassword
+            }
+        }, info);
 
     },
     async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {

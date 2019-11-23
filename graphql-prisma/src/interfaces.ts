@@ -5,6 +5,7 @@ export interface IBlogUser {
     id: string;
     name: string;
     email: string;
+    password: string;
     age: number;
     comments: IComment[];
     posts: IPost[];
