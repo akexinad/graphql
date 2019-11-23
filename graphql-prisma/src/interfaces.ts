@@ -91,3 +91,8 @@ export interface IUpdateComment {
     id: IComment["id"];
     data: IComment;
 }
+
+export interface IAuthPayload {
+    user: IBlogUser;
+    token: string;
+}

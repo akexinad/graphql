@@ -1,11 +1,10 @@
 import bcrypt from "bcryptjs";
-
-import { IBlogUser, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
-
 import { GraphQLResolveInfo } from "graphql";
+import jwt from "jsonwebtoken";
+import { IAuthPayload, IBlogUser, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateComment, IUpdatePost, IUpdateUser, IUserArgs } from "../interfaces";
 
 export const Mutation = {
-    async createUser(parent: any, args: IUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async createUser(parent: any, args: IUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
 
         const creationData = args.data;
 
@@ -15,12 +14,17 @@ export const Mutation = {
 
         const hashedPassword = await bcrypt.hash(creationData.password, 10);
 
-        return prisma.mutation.createUser({
+        const user: IBlogUser = await prisma.mutation.createUser({
             data: {
                 ...creationData,
                 password: hashedPassword
             }
-        }, info);
+        });
+
+        return {
+            user,
+            token: jwt.sign({ userId: user.id }, "jsonwebtokensecret")
+        };
 
     },
     async updateUser(parent: any, args: IUpdateUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
