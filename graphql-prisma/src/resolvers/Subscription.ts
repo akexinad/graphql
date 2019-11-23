@@ -1,10 +1,10 @@
 import { GraphQLResolveInfo } from "graphql";
-import { COMMENT_CHANNEL, POST_CHANNEL } from "../helpers/channels";
-import { IComment, IGraphQLContext, IPost } from "../interfaces";
+import { Context } from "graphql-yoga/dist/types";
+import { IComment, IPost } from "../interfaces";
 
 export const Subscription = {
     comment: {
-        subscribe(parent: any, args: any, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): AsyncIterator<IComment> {
+        subscribe(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): AsyncIterator<IComment> {
 
             // PRISMA has built-in support for subscriptions
 
@@ -14,8 +14,6 @@ export const Subscription = {
             subscribe to posts of the id passed into the arguments
 
             */
-
-            console.log(args);
 
             const operationArguments = {
                 where: {
@@ -27,24 +25,12 @@ export const Subscription = {
                 }
             };
 
-            // @ts-ignore
             return prisma.subscription.comment(operationArguments, info);
 
-            /*
-
-            const post = db.posts.find((post) => post.id === args.postId && post.published);
-
-            if (!post) {
-                throw new Error("404: Post Not Found");
-            }
-
-            return pubsub.asyncIterator(COMMENT_CHANNEL(post.id));
-
-            */
         }
     },
     post: {
-        subscribe(parent: any, args: IPost, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): AsyncIterator<IPost> {
+        subscribe(parent: any, args: IPost, { prisma }: Context, info: GraphQLResolveInfo): AsyncIterator<IPost> {
 
             // subscribe to posts that are published ONLY.
             const operationArguments = {
@@ -55,17 +41,8 @@ export const Subscription = {
                 }
             };
 
-            // @ts-ignore
             return prisma.subscription.post(operationArguments, info);
 
-            /*
-            const posts = db.posts;
-
-            pubsub.publish(POST_CHANNEL, { posts });
-
-            return pubsub.asyncIterator(POST_CHANNEL);
-
-            */
         }
     }
 };

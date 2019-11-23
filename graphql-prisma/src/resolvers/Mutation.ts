@@ -1,12 +1,13 @@
 import bcrypt from "bcryptjs";
 import { GraphQLResolveInfo } from "graphql";
+import { Context } from "graphql-yoga/dist/types";
 import jwt from "jsonwebtoken";
-import { IAuthPayload, IBlogUser, IBlogUserArgs, IComment, ICommentArgs, IGraphQLContext, IPost, IPostArgs, IUpdateBlogUser, IUpdateComment, IUpdatePost } from "../interfaces";
-
-const JWT_SECRET = "thisisajsonwebtokensecrets9b$7h1sr6gj7h4_9nwj7r9tnu49l7e9r7byh1e97kj111n19sd";
+import { IAuthPayload, IBlogUser, IBlogUserArgs, IComment, ICommentArgs, IPost, IPostArgs, IUpdateBlogUser, IUpdateComment, IUpdatePost } from "../interfaces";
+import { getUserId } from "../utils/getUserId";
+import { JWT_SECRET } from "../utils/jwtSecret";
 
 export const Mutation = {
-    async createUser(parent: any, args: IBlogUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
+    async createUser(parent: any, args: IBlogUserArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IAuthPayload> {
 
         const creationData = args.data;
 
@@ -31,7 +32,7 @@ export const Mutation = {
         };
 
     },
-    async updateUser(parent: any, args: IUpdateBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async updateUser(parent: any, args: IUpdateBlogUser, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         return prisma.mutation.updateUser({
             where: {
@@ -41,7 +42,7 @@ export const Mutation = {
         }, info);
 
     },
-    async deleteUser(parent: any, args: IBlogUser, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async deleteUser(parent: any, args: IBlogUser, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const deletedUser = await prisma.mutation.deleteUser({
             where: {
@@ -52,7 +53,7 @@ export const Mutation = {
         return deletedUser;
 
     },
-    async login(parent: any, args: IBlogUserArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IAuthPayload> {
+    async login(parent: any, args: IBlogUserArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IAuthPayload> {
 
         const loginData = args.data;
 
@@ -80,7 +81,9 @@ export const Mutation = {
         };
 
     },
-    async createPost(parent: any, args: IPostArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+    async createPost(parent: any, args: IPostArgs, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+
+        const userId = getUserId(request);
 
         const creationData = args.data;
 
@@ -91,14 +94,14 @@ export const Mutation = {
                 published: creationData.published,
                 author: {
                     connect: {
-                        id: creationData.author
+                        id: userId
                     }
                 }
             }
         }, info);
 
     },
-    async updatePost(parent: any, args: IUpdatePost, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+    async updatePost(parent: any, args: IUpdatePost, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
 
         const updateData = args.data;
 
@@ -110,7 +113,7 @@ export const Mutation = {
         }, info);
 
     },
-    async deletePost(parent: any, args: IPost, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IPost> {
+    async deletePost(parent: any, args: IPost, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
 
         return prisma.mutation.deletePost({
             where: {
@@ -119,7 +122,7 @@ export const Mutation = {
         }, info);
 
     },
-    async createComment(parent: any, args: ICommentArgs, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+    async createComment(parent: any, args: ICommentArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
 
         const creationData = args.data;
 
@@ -140,7 +143,7 @@ export const Mutation = {
         }, info);
 
     },
-    async updateComment(parent: any, args: IUpdateComment, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+    async updateComment(parent: any, args: IUpdateComment, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
 
         const updateData = args.data;
 
@@ -154,7 +157,7 @@ export const Mutation = {
         }, info);
 
     },
-    async deleteComment(parent: any, args: IComment, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IComment> {
+    async deleteComment(parent: any, args: IComment, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
 
         return prisma.mutation.deleteComment({
             where: {

@@ -56,12 +56,6 @@ export interface IComment {
 }
 
 export interface IGraphQLContext {
-    db: {
-        users: IBlogUser[];
-        posts: IPost[];
-        comments: IComment[];
-    };
-    pubsub: PubSub;
     prisma: Prisma;
 }
 
@@ -95,4 +89,9 @@ export interface IUpdateComment {
 export interface IAuthPayload {
     user: IBlogUser;
     token: string;
+}
+
+export interface IJWTPayload {
+    readonly userId: IBlogUser["id"];
+    readonly iat: Date;
 }

@@ -1,8 +1,9 @@
 import { GraphQLResolveInfo } from "graphql";
-import { IBlogUser, IComment, IGraphQLContext, IPost } from "../interfaces";
+import { Context } from "graphql-yoga/dist/types";
+import { IBlogUser, IComment, IPost } from "../interfaces";
 
 export const Query = {
-    users(parent: any, args: any, { prisma }: IGraphQLContext, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
+    users(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
         const operationArguments = {
         };
@@ -36,7 +37,7 @@ export const Query = {
         */
     },
 
-    posts(parent: any, args: any, { prisma }: IGraphQLContext, info: any): Promise<IPost[]> {
+    posts(parent: any, args: any, { prisma }: Context, info: any): Promise<IPost[]> {
 
         const operationArguments = {};
 
@@ -64,7 +65,7 @@ export const Query = {
         */
     },
 
-    comments(parent: any, args: any, { prisma }: IGraphQLContext, info: any): Promise<IComment[]> {
+    comments(parent: any, args: any, { prisma }: Context, info: any): Promise<IComment[]> {
 
         const operationArguments = {};
 

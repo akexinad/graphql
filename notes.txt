@@ -204,3 +204,13 @@ Then redeploy.
 
 Then generate a new schema by running npm run get-schema. However, if you have already set up the secret, you will get an error.
 Adding the prisma property on the prismaconfig file will fix as it will tell prisma where to look for the new datamodel
+
+
+
+
+
+VALIDATING AUTH TOKENS
+======================
+
+In order to add authorization to the GraphQL context, we need to turn the context argument in the graphql server into a function
+    so we can pass pass the authorization headers as an argument to the - formerly context object - context function. 
