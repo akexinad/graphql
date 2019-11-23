@@ -63,7 +63,7 @@ export const Mutation = {
         });
 
         if (!existingUser) {
-            throw new Error("404: User not found!");
+            throw new Error("403: Unable to login");
         }
 
         const isMatch = await bcrypt.compare(loginData.password, existingUser.password);
