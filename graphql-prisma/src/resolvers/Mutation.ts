@@ -103,7 +103,7 @@ export const Mutation = {
         }, info);
 
     },
-    async updatePost(parent: ParentNode, args: IUpdatePost, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+    async updatePost(parent: any, args: IUpdatePost, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
 
         // this mutation is now locked down and you have to be authenticated in order to update your own profile.
         const userId = getUserId(request);
