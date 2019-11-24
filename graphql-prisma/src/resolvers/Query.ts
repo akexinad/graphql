@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
+import { Args, QueryMap } from "graphql-binding/dist/types";
 import { Context } from "graphql-yoga/dist/types";
 import { IBlogUser, IComment, IPost } from "../interfaces";
 import { getUserId } from "../utils/getUserId";
@@ -33,21 +34,22 @@ export const Query = {
 
     posts(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
-        const operationArguments = {};
+        const operationArguments = {
+            where: {
+                published: true,
+            }
+        };
 
         if (args.query) {
             // @ts-ignore
-            operationArguments.where = {
-                OR: [{
-                    title_contains: args.query
-                }, {
-                    body_contains: args.query
-                }]
-            };
+            operationArguments.where.OR = [{
+                title_contains: args.query
+            }, {
+                body_contains: args.query
+            }];
         }
 
         return prisma.query.posts(operationArguments, info);
-
     },
 
     comments(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment[]> {
@@ -77,7 +79,7 @@ export const Query = {
 
     },
 
-    async post(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+    async post(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
         const userId = getUserId(request, false);
 
@@ -99,5 +101,29 @@ export const Query = {
         }
 
         return posts[0];
+    },
+
+    async myPosts(parent: any, args: Args, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
+
+        const userId = getUserId(request);
+
+        const operationArguments = {
+            where: {
+                author: {
+                    id: userId
+                }
+            }
+        };
+
+        if (args.qeury) {
+            // @ts-ignore
+            operationArguments.where.OR = [{
+                title_contains: args.query
+            }, {
+                body_contains: args.query
+            }];
+        }
+
+        return prisma.query.posts(operationArguments, info);
     }
 };
