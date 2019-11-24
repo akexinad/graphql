@@ -32,25 +32,27 @@ export const Mutation = {
         };
 
     },
-    async updateUser(parent: any, args: IUpdateBlogUser, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async updateUser(parent: any, args: IUpdateBlogUser, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
+
+        const userId = getUserId(request);
 
         return prisma.mutation.updateUser({
             where: {
-                id: args.id
+                id: userId
             },
             data: args.data
         }, info);
 
     },
-    async deleteUser(parent: any, args: IBlogUser, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async deleteUser(parent: any, args: IBlogUser, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
-        const deletedUser = await prisma.mutation.deleteUser({
+        const userId = getUserId(request);
+
+        return prisma.mutation.deleteUser({
             where: {
-                id: args.id
+                id: userId
             }
         }, info);
-
-        return deletedUser;
 
     },
     async login(parent: any, args: IBlogUserArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IAuthPayload> {
@@ -101,19 +103,35 @@ export const Mutation = {
         }, info);
 
     },
-    async updatePost(parent: any, args: IUpdatePost, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+    async updatePost(parent: ParentNode, args: IUpdatePost, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+
+        // this mutation is now locked down and you have to be authenticated in order to update your own profile.
+        const userId = getUserId(request);
 
         const updateData = args.data;
 
         return prisma.mutation.updatePost({
             where: {
-                id: args.id
+                id: userId
             },
             data: updateData
         }, info);
 
     },
-    async deletePost(parent: any, args: IPost, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+    async deletePost(parent: any, args: IPost, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+
+        const userId = getUserId(request);
+
+        const postExists = await prisma.exists.Post({
+            id: args.id,
+            author: {
+                id: userId
+            }
+        });
+
+        if (!postExists) {
+            throw new Error("400: Unable to delete post.");
+        }
 
         return prisma.mutation.deletePost({
             where: {
