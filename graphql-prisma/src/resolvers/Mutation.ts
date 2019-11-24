@@ -105,14 +105,24 @@ export const Mutation = {
     },
     async updatePost(parent: any, args: IUpdatePost, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
 
-        // this mutation is now locked down and you have to be authenticated in order to update your own profile.
+        const updateData = args.data;
+
         const userId = getUserId(request);
 
-        const updateData = args.data;
+        const postExists = await prisma.exists.Post({
+            id: args.id,
+            author: {
+                id: userId
+            }
+        });
+
+        if (!postExists) {
+            throw new Error("404: Unable to find post!");
+        }
 
         return prisma.mutation.updatePost({
             where: {
-                id: userId
+                id: args.id
             },
             data: updateData
         }, info);
@@ -140,16 +150,18 @@ export const Mutation = {
         }, info);
 
     },
-    async createComment(parent: any, args: ICommentArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
+    async createComment(parent: any, args: ICommentArgs, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
 
         const creationData = args.data;
+
+        const userId = getUserId(request);
 
         return prisma.mutation.createComment({
             data: {
                 text: creationData.text,
                 author: {
                     connect: {
-                        id: creationData.author
+                        id: userId
                     }
                 },
                 post: {
@@ -161,9 +173,22 @@ export const Mutation = {
         }, info);
 
     },
-    async updateComment(parent: any, args: IUpdateComment, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
+    async updateComment(parent: any, args: IUpdateComment, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
 
         const updateData = args.data;
+
+        const userId = getUserId(request);
+
+        const commentExists = await prisma.exists.Comment({
+            id: args.id,
+            author: {
+                id: userId
+            }
+        });
+
+        if (!commentExists) {
+            throw new Error("400: Unable to update comment.");
+        }
 
         return prisma.mutation.updateComment({
             where: {
@@ -175,7 +200,20 @@ export const Mutation = {
         }, info);
 
     },
-    async deleteComment(parent: any, args: IComment, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
+    async deleteComment(parent: any, args: IComment, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IComment> {
+
+        const userId = getUserId(request);
+
+        const commentExists = await prisma.exists.Comment({
+            id: args.id,
+            author: {
+                id: userId
+            }
+        });
+
+        if (!commentExists) {
+            throw new Error("400: Unable to delete comment.");
+        }
 
         return prisma.mutation.deleteComment({
             where: {
