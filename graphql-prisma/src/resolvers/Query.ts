@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { Context } from "graphql-yoga/dist/types";
 import { IBlogUser, IComment, IPost } from "../interfaces";
+import { getUserId } from "../utils/getUserId";
 
 export const Query = {
     users(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
@@ -30,7 +31,7 @@ export const Query = {
 
     },
 
-    posts(parent: any, args: any, { prisma }: Context, info: any): Promise<IPost[]> {
+    posts(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
         const operationArguments = {};
 
@@ -49,7 +50,7 @@ export const Query = {
 
     },
 
-    comments(parent: any, args: any, { prisma }: Context, info: any): Promise<IComment[]> {
+    comments(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment[]> {
 
         const operationArguments = {};
 
@@ -63,4 +64,40 @@ export const Query = {
         return prisma.query.comments(operationArguments, info);
 
     },
+
+    async me(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
+
+        const userId = getUserId(request);
+
+        return prisma.query.user({
+            where: {
+                id: userId
+            }
+        });
+
+    },
+
+    async post(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost> {
+
+        const userId = getUserId(request, false);
+
+        const posts = await prisma.query.posts({
+            where: {
+                id: args.id,
+                OR: [{
+                    published: true
+                }, {
+                    author: {
+                        id: userId
+                    }
+                }]
+            }
+        }, info);
+
+        if (posts.length === 0) {
+            throw new Error("404: Post not found!");
+        }
+
+        return posts[0];
+    }
 };
