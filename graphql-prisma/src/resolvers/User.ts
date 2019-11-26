@@ -1,18 +1,20 @@
+import { GraphQLResolveInfo } from "graphql";
+import { Context } from "graphql-yoga/dist/types";
 import { IBlogUser, IComment, IGraphQLContext, IPost } from "../interfaces";
+import { getUserId } from "../utils/getUserId";
 
 export const User = {
 
-    /*
+    email(parent: IBlogUser, args: any, { request }: Context, info: GraphQLResolveInfo): IBlogUser["email"] {
 
-    We do not need to manually write functionality to get related data.
-    This comes for free with prisma.
+        const userId = getUserId(request, false);
 
-    posts(parent: IBlogUser, args: any, { db }: IGQLCtx, info: any): IPost[] {
-        return db.posts.filter((post) => post.author === parent.id);
-    },
-    comments(parent: IComment, args: any, { db }: IGQLCtx, info: any): IComment[] {
-        return db.comments.filter((comment) => comment.author === parent.id);
+        // Now we can hide the emails of users that do not belong to the unauthenticated user when
+        // the authenticated user qeuries for users.
+        if (userId && userId === parent.id) {
+            return parent.email;
+        } else {
+            return null;
+        }
     }
-
-    */
 };
