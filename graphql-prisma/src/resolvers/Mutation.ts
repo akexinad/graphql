@@ -120,6 +120,21 @@ export const Mutation = {
             throw new Error("404: Unable to find post!");
         }
 
+        const isPublished = await prisma.exists.Post({
+            id: args.id,
+            published: true
+        });
+
+        if (isPublished && updateData.published === false) {
+            await prisma.mutation.deleteManyComments({
+                where: {
+                    post: {
+                        id: args.id
+                    }
+                }
+            });
+        }
+
         return prisma.mutation.updatePost({
             where: {
                 id: args.id
@@ -155,6 +170,15 @@ export const Mutation = {
         const creationData = args.data;
 
         const userId = getUserId(request);
+
+        const publishedPost = await prisma.exists.Post({
+            id: creationData.post,
+            published: true
+        });
+
+        if (!publishedPost) {
+            throw new Error("404: Post not found!");
+        }
 
         return prisma.mutation.createComment({
             data: {

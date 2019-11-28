@@ -15,8 +15,6 @@ export const Query = {
             operationArguments.where = {
                 OR: [{
                     name_contains: args.query
-                }, {
-                    email_contains: args.query
                 }]
             };
         }
