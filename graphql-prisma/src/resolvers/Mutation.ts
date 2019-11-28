@@ -1,10 +1,9 @@
 import bcrypt from "bcryptjs";
 import { GraphQLResolveInfo } from "graphql";
 import { Context } from "graphql-yoga/dist/types";
-import jwt from "jsonwebtoken";
 import { IAuthPayload, IBlogUser, IBlogUserArgs, IComment, ICommentArgs, IPost, IPostArgs, IUpdateBlogUser, IUpdateComment, IUpdatePost } from "../interfaces";
+import { generateToken } from "../utils/generateToken";
 import { getUserId } from "../utils/getUserId";
-import { JWT_SECRET } from "../utils/jwtSecret";
 
 export const Mutation = {
     async createUser(parent: any, args: IBlogUserArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IAuthPayload> {
@@ -24,7 +23,7 @@ export const Mutation = {
             }
         });
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+        const token = generateToken(user.id);
 
         return {
             user,
@@ -75,7 +74,7 @@ export const Mutation = {
             throw new Error("403: Unable to login");
         }
 
-        const jwtToken = jwt.sign({ userId: existingUser.id }, JWT_SECRET);
+        const jwtToken = generateToken(existingUser.id);
 
         return {
             user: existingUser,
