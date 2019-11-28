@@ -5,7 +5,12 @@ import { JWT_SECRET } from "./jwtSecret";
 
 export const getUserId = (request: ContextParameters, requireAuth = true): IBlogUser["id"] => {
 
-    const authHeader = request.request.headers.authorization;
+    // The first return result of the ternary operator is for your standard HTTP requests
+    // The second return resut For subscriptions that require websocket requests
+
+    const authHeader = request.request ? request.request.headers.authorization : request.connection.context.authorization;
+
+    console.log(authHeader);
 
     if (authHeader) {
         const token = authHeader.replace("Bearer ", "");

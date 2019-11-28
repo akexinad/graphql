@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { Context } from "graphql-yoga/dist/types";
 import { IComment, IPost } from "../interfaces";
+import { getUserId } from "../utils/getUserId";
 
 export const Subscription = {
     comment: {
@@ -43,6 +44,24 @@ export const Subscription = {
 
             return prisma.subscription.post(operationArguments, info);
 
+        }
+    },
+    myPost: {
+        subscribe(parent: any, args: IPost, { request, prisma }: Context, info: GraphQLResolveInfo): AsyncIterator<IPost> {
+
+            const userId = getUserId(request);
+
+            const operationArguments = {
+                where: {
+                    node: {
+                        author: {
+                            id: userId
+                        }
+                    }
+                }
+            };
+
+            return prisma.subscription.post(operationArguments, info);
         }
     }
 };
