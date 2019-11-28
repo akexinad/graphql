@@ -1,6 +1,6 @@
 type Query {
     posts(query: String): [Post!]!
-    users(query: String): [User!]!
+    users(query: String, first: Int, skip: Int): [User!]!
     comments(query: String): [Comment!]!
     me: User!
     post(id: ID!): Post!
@@ -37,6 +37,7 @@ input CreateUserInput {
 input UpdateUserInput {
     name: String
     email: String
+    password: String
 }
 
 input LoginUserInput {

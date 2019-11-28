@@ -22,7 +22,7 @@ export const User = {
     },
 
     posts: {
-        fragment: "fragment userid on User { id }",
+        fragment: "fragment userId on User { id }",
         resolve(parent: IBlogUser, args: any, { prisma }: Context, info: GraphQLResolveInfo): IPost["published"] {
 
             return prisma.query.posts({
@@ -36,5 +36,4 @@ export const User = {
 
         }
     }
-
 };

@@ -4,17 +4,14 @@ import { Context } from "graphql-yoga/dist/types";
 import { IAuthPayload, IBlogUser, IBlogUserArgs, IComment, ICommentArgs, IPost, IPostArgs, IUpdateBlogUser, IUpdateComment, IUpdatePost } from "../interfaces";
 import { generateToken } from "../utils/generateToken";
 import { getUserId } from "../utils/getUserId";
+import { hashPassword } from "../utils/hashPassword";
 
 export const Mutation = {
     async createUser(parent: any, args: IBlogUserArgs, { prisma }: Context, info: GraphQLResolveInfo): Promise<IAuthPayload> {
 
         const creationData = args.data;
 
-        if (creationData.password.length < 8) {
-            throw new Error("Password must be 8 characters or longer.");
-        }
-
-        const hashedPassword = await bcrypt.hash(creationData.password, 10);
+        const hashedPassword = await hashPassword(creationData.password);
 
         const user: IBlogUser = await prisma.mutation.createUser({
             data: {
@@ -35,12 +32,18 @@ export const Mutation = {
 
         const userId = getUserId(request);
 
-        return prisma.mutation.updateUser({
-            where: {
-                id: userId
-            },
-            data: args.data
-        }, info);
+        if (typeof args.data.password === "string") {
+            args.data.password = await hashPassword(args.data.password);
+        }
+
+        if (args) {
+            return prisma.mutation.updateUser({
+                where: {
+                    id: userId
+                },
+                data: args.data
+            }, info);
+        }
 
     },
     async deleteUser(parent: any, args: IBlogUser, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
