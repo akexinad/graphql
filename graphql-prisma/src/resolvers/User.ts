@@ -35,5 +35,21 @@ export const User = {
             });
 
         }
+    },
+
+    password: {
+        fragment: "fragment userId on User { id }",
+        resolve(parent: IBlogUser, args: any, { request }: Context, info: GraphQLResolveInfo): IBlogUser["password"] {
+
+            const userId = getUserId(request, false);
+
+            // Now we can hide the emails of users that do not belong to the unauthenticated user when
+            // the authenticated user qeuries for users.
+            if (userId && userId === parent.id) {
+                return parent.password;
+            } else {
+                return null;
+            }
+        }
     }
 };

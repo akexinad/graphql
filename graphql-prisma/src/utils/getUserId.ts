@@ -10,8 +10,6 @@ export const getUserId = (request: ContextParameters, requireAuth = true): IBlog
 
     const authHeader = request.request ? request.request.headers.authorization : request.connection.context.authorization;
 
-    console.log(authHeader);
-
     if (authHeader) {
         const token = authHeader.replace("Bearer ", "");
         // @ts-ignore
