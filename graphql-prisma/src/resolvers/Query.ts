@@ -8,6 +8,8 @@ export const Query = {
     users(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
         const operationArguments = {
+            first: args.first,
+            skip: args.skip
         };
 
         if (args.query) {
@@ -33,6 +35,8 @@ export const Query = {
     posts(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
         const operationArguments = {
+            first: args.first,
+            skip: args.skip,
             where: {
                 published: true,
             }
