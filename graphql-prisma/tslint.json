@@ -10,7 +10,8 @@
         "max-line-length": [false, 200],
         "no-console": [false],
         "no-shadowed-variable": false,
-        "typedef": [true, "call-signature"]
+        "typedef": [true, "call-signature"],
+        "semicolon": [true, "always"]
     },
     "rulesDirectory": []
 }

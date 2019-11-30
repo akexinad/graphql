@@ -5,11 +5,12 @@ import { IBlogUser, IComment, IPost } from "../interfaces";
 import { getUserId } from "../utils/getUserId";
 
 export const Query = {
-    users(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
+    users(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
         const operationArguments = {
             first: args.first,
-            skip: args.skip
+            skip: args.skip,
+            after: args.after
         };
 
         if (args.query) {
@@ -32,11 +33,12 @@ export const Query = {
 
     },
 
-    posts(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
+    posts(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
         const operationArguments = {
             first: args.first,
             skip: args.skip,
+            after: args.after,
             where: {
                 published: true,
             }
@@ -54,9 +56,13 @@ export const Query = {
         return prisma.query.posts(operationArguments, info);
     },
 
-    comments(parent: any, args: any, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment[]> {
+    comments(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment[]> {
 
-        const operationArguments = {};
+        const operationArguments = {
+            first: args.first,
+            skip: args.skip,
+            after: args.after
+        };
 
         if (args.query) {
             // @ts-ignore
@@ -81,7 +87,7 @@ export const Query = {
 
     },
 
-    async post(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
+    async post(parent: any, args: Args, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
         const userId = getUserId(request, false);
 
@@ -110,6 +116,9 @@ export const Query = {
         const userId = getUserId(request);
 
         const operationArguments = {
+            first: args.first,
+            skip: args.skip,
+            after: args.after,
             where: {
                 author: {
                     id: userId
