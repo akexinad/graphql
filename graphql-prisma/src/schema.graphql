@@ -73,6 +73,8 @@ type User {
     password: String
     posts: [Post]!
     comments: [Comment]!
+    updatedAt: String!
+    createdAt: String!
 }
 
 type AuthPayload {
