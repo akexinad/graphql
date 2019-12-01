@@ -240,3 +240,26 @@ Both are free which is nice.
 When we deploy to prisma cloud, we are going to use a single server and run mulitple services within it.
     - We proved that this is possible when we made a blog and book review service within the same docker container which was running
         a local server on port 4466.
+
+
+
+
+DEPLOYING TO DIFFERENT ENVIRONMENTS
+===================================
+
+We need to first create env files in a config directory.
+
+Then when we want to deploy our application, we tell prisma what environment to look with the -e argument and the path to the env file:
+    - prisma deploy -e ../config/development.env
+
+
+To deploy to production, we need prisma to spin up the endpoint for us.
+To do so, first we login to prisma via the terminal: 
+    - prisma login
+
+Then we tell prisma to use our production.env file despite the fact that it is empty.
+
+It will then ask you which server to which you want to deploy, name and stage.
+
+It will copy the production endpoint to your prisma.yml file, you can paste that endpoint to your production.env file, and uncomment the original line
+    that prisma commented for you.
