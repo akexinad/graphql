@@ -11,10 +11,11 @@ type Query {
 }
 
 type Mutation {
+    login(data: LoginUserInput!): AuthPayload!
+    
     createUser(data: CreateUserInput!): AuthPayload!
     deleteUser: User!
     updateUser(data: UpdateUserInput!): User!
-    login(data: LoginUserInput!): AuthPayload!
     
     createPost(data: CreatePostInput!): Post!
     deletePost(id: ID!): Post!
