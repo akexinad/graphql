@@ -213,4 +213,30 @@ VALIDATING AUTH TOKENS
 ======================
 
 In order to add authorization to the GraphQL context, we need to turn the context argument in the graphql server into a function
-    so we can pass pass the authorization headers as an argument to the - formerly context object - context function. 
+    so we can pass pass the authorization headers as an argument to the - formerly context object - context function.
+
+
+
+
+DEPLOYMENT OF THE APPLICATION
+=============================
+
+There are three things that we need to do in order to deploy our application:
+
+1. A Production DB.
+2. A place to host our prisma docker container.
+3. A place to host our node.js application.
+
+
+These requirements will be met via two services:
+
+1. Heroku.
+    - Heroku will host our DB, docker container and the application.
+2. Prisma Cloud.
+    - This will make it easier to manage our heroku-prisma instances.
+
+Both are free which is nice.
+
+When we deploy to prisma cloud, we are going to use a single server and run mulitple services within it.
+    - We proved that this is possible when we made a blog and book review service within the same docker container which was running
+        a local server on port 4466.
