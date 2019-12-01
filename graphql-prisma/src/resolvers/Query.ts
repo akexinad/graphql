@@ -7,10 +7,13 @@ import { getUserId } from "../utils/getUserId";
 export const Query = {
     users(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser[]> {
 
+        const { first, skip, after, orderBy } = args;
+
         const operationArguments = {
-            first: args.first,
-            skip: args.skip,
-            after: args.after
+            first,
+            skip,
+            after,
+            orderBy
         };
 
         if (args.query) {
@@ -35,10 +38,13 @@ export const Query = {
 
     posts(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IPost[]> {
 
+        const { first, skip, after, orderBy } = args;
+
         const operationArguments = {
-            first: args.first,
-            skip: args.skip,
-            after: args.after,
+            first,
+            skip,
+            after,
+            orderBy,
             where: {
                 published: true,
             }
@@ -58,10 +64,13 @@ export const Query = {
 
     comments(parent: any, args: Args, { prisma }: Context, info: GraphQLResolveInfo): Promise<IComment[]> {
 
+        const { first, skip, after, orderBy } = args;
+
         const operationArguments = {
-            first: args.first,
-            skip: args.skip,
-            after: args.after
+            first,
+            skip,
+            after,
+            orderBy
         };
 
         if (args.query) {
@@ -75,7 +84,7 @@ export const Query = {
 
     },
 
-    async me(parent: any, args: any, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
+    async me(parent: any, args: Args, { request, prisma }: Context, info: GraphQLResolveInfo): Promise<IBlogUser> {
 
         const userId = getUserId(request);
 
@@ -115,10 +124,13 @@ export const Query = {
 
         const userId = getUserId(request);
 
+        const { first, skip, after, orderBy } = args;
+
         const operationArguments = {
-            first: args.first,
-            skip: args.skip,
-            after: args.after,
+            first,
+            skip,
+            after,
+            orderBy,
             where: {
                 author: {
                     id: userId
