@@ -8,7 +8,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "ts-node src/index.ts",
-    "dev": "nodemon ./node_modules/nodemon/bin/nodemon.js",
+    "dev": "env-cmd ./config/dev.env nodemon ./node_modules/nodemon/bin/nodemon.js",
     "get-schema": "graphql get-schema -p prisma"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^12.11.7",
     "bcryptjs": "^2.4.3",
+    "env-cmd": "^8.0.2",
     "express": "^4.17.1",
     "graphql-cli": "^2.16.4",
     "graphql-yoga": "^1.16.7",
