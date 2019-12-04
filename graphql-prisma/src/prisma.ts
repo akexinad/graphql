@@ -10,7 +10,7 @@ const prisma = new Prisma({
     // if your on windows you have to provide the IP address for the endpoint.
     endpoint: process.env.PRISMA_ENDPOINT,
     // endpoint: "http://localhost:4466/blog/dev",
-    secret: "578b6e1g76ebg4ertbgy7edg4berby7bgwe",
+    secret: process.env.PRISMA_SECRET,
     fragmentReplacements
 });
 

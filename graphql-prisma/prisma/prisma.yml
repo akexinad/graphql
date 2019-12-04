@@ -1,3 +1,3 @@
 endpoint: ${env:PRISMA_ENDPOINT}
 datamodel: datamodel.prisma
-secret: 578b6e1g76ebg4ertbgy7edg4berby7bgwe
+secret: ${env:PRISMA_SECRET}

@@ -9,7 +9,7 @@
     "prestart": "npm run build",
     "start": "env-cmd ./config/prod.env ts-node src/index.ts",
     "dev": "env-cmd ./config/dev.env nodemon ./node_modules/nodemon/bin/nodemon.js",
-    "get-schema": "graphql get-schema -p prisma"
+    "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env"
   },
   "keywords": [],
   "author": "",
