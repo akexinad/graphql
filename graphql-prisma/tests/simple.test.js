@@ -3,7 +3,7 @@ describe("this test", () => {
         expect(true).toBeTruthy();
     });
 
-    it("should render loading...", () => {
+    it("should render loading... and no error", () => {
         expect(false).toBeFalsy();
     });
 });
