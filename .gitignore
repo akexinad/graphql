@@ -3,4 +3,4 @@ package-lock.json
 docker-compose.yml
 config
 apollo-client/dist/
-apollo-client/cache/
+apollo-client/.cache/
