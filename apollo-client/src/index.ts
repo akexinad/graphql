@@ -27,24 +27,24 @@ const getPosts = gql`
     }
 `;
 
-// client
-//     .query({
-//         query: getUsers
-//     })
-//     .then((response) => {
-//         let html = "";
+client
+    .query({
+        query: getUsers
+    })
+    .then((response) => {
+        let html = "";
 
-//         response.data.users.forEach((user: any) => {
-//             html += `
-//                 <div>
-//                     <h3>${ user.name}</h3>
-//                 </div>
-//             `;
-//         });
+        response.data.users.forEach((user: any) => {
+            html += `
+                <div>
+                    <h3>${ user.name}</h3>
+                </div>
+            `;
+        });
 
-//         // @ts-ignore
-//         document.getElementById("users").innerHTML = html;
-//     });
+        // @ts-ignore
+        document.getElementById("users").innerHTML = html;
+    });
 
 client
     .query({

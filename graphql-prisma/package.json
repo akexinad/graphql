@@ -7,22 +7,29 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "env-cmd ./config/prod.env ts-node src/index.ts",
-    "dev": "env-cmd ./config/dev.env nodemon ./node_modules/nodemon/bin/nodemon.js",
+    "start": "env-cmd -f ./config/prod.env ts-node src/index.ts",
+    "ts-node": "npm run prestart && env-cmd -f ./config/dev.env ts-node src/index.ts",
+    "dev": "env-cmd -f ./config/dev.env nodemon ./node_modules/nodemon/bin/nodemon.js",
     "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
-    "test": "jest --watch"
+    "test": "env-cmd -f ./config/test.env jest --watch"
+  },
+  "jest": {
+    "globalSetup": "./tests/jestConfig/globalSetup.js",
+    "globalTeardown": "./tests/jestConfig/globalTeardown.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.1",
     "@types/graphql": "^14.5.0",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^12.11.7",
+    "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
-    "env-cmd": "^8.0.2",
+    "env-cmd": "^10.0.1",
     "express": "^4.17.1",
     "graphql-cli": "^2.16.4",
     "graphql-yoga": "^1.16.7",
