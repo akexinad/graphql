@@ -11,15 +11,22 @@
     "predev": "npm run build && env-cmd -f ./config/dev.env ts-node src/index.ts",
     "dev": "env-cmd -f ./config/dev.env nodemon",
     "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
-    "test": "env-cmd -f ./config/test.env jest --watch"
+    "test": "tsc && env-cmd -f ./config/test.env jest --watch"
   },
   "nodemonConfig": {
-    "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
-    "watch": ["src", "tests"],
+    "ignore": [
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src",
+      "tests"
+    ],
     "exec": "npm run predev",
     "ext": "ts, graphql"
   },
   "jest": {
+    "preset": "ts-jest",
     "globalSetup": "./tests/jestConfig/globalSetup.js",
     "globalTeardown": "./tests/jestConfig/globalTeardown.js"
   },
@@ -44,11 +51,13 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.33",
+    "@types/jest": "^24.0.23",
     "@types/uuid": "^3.4.5",
     "@types/ws": "^6.0.3",
     "jest": "^23.5.0",
     "nodemon": "^1.19.2",
     "prettier": "1.18.2",
+    "ts-jest": "^24.2.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"

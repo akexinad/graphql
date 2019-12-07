@@ -7,4 +7,4 @@ const server = require("../../dist/server");
 
 module.exports = async () => {
     global.httpServer = await server.start({ port: 4000 });
-}
+};

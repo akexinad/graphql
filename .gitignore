@@ -4,3 +4,4 @@ docker-compose.yml
 config
 apollo-client/dist/
 apollo-client/.cache/
+graphql-prisma/dist/
