@@ -11,7 +11,7 @@
     "predev": "npm run build && env-cmd -f ./config/dev.env ts-node src/index.ts",
     "dev": "env-cmd -f ./config/dev.env nodemon",
     "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
-    "test": "tsc && env-cmd -f ./config/test.env jest --watch"
+    "test": "env-cmd -f ./config/test.env concurrently \"tsc -w\" \"jest --watchAll\""
   },
   "nodemonConfig": {
     "ignore": [
@@ -26,9 +26,8 @@
     "ext": "ts, graphql"
   },
   "jest": {
-    "preset": "ts-jest",
-    "globalSetup": "./tests/jestConfig/globalSetup.js",
-    "globalTeardown": "./tests/jestConfig/globalTeardown.js"
+    "globalSetup": "./dist/tests/jestConfig/globalSetup.js",
+    "globalTeardown": "./dist/tests/jestConfig/globalTeardown.js"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +41,7 @@
     "@types/node": "^12.11.7",
     "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^5.0.0",
     "env-cmd": "^10.0.1",
     "express": "^4.17.1",
     "graphql-cli": "^2.16.4",
