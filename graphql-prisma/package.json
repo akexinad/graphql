@@ -27,6 +27,7 @@
   },
   "jest": {
     "preset": "ts-jest/presets/default",
+    "testPathIgnorePatterns": ["dist"],
     "globals": {
       "ts-jest": {
         "globalSetup": "./tests/jestConfig/globalSetup.ts",
