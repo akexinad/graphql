@@ -11,7 +11,7 @@
     "predev": "npm run build && env-cmd -f ./config/dev.env ts-node src/index.ts",
     "dev": "env-cmd -f ./config/dev.env nodemon",
     "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
-    "test": "env-cmd -f ./config/test.env concurrently \"tsc -w\" \"jest --watchAll\""
+    "test": "env-cmd -f ./config/test.env jest --watchAll"
   },
   "nodemonConfig": {
     "ignore": [
@@ -26,8 +26,13 @@
     "ext": "ts, graphql"
   },
   "jest": {
-    "globalSetup": "./dist/tests/jestConfig/globalSetup.js",
-    "globalTeardown": "./dist/tests/jestConfig/globalTeardown.js"
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "globalSetup": "./tests/jestConfig/globalSetup.ts",
+        "globalTeardown": "./tests/jestConfig/globalTeardown.ts"
+      }
+    }
   },
   "keywords": [],
   "author": "",
@@ -37,7 +42,6 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.1",
     "@types/graphql": "^14.5.0",
-    "@types/jest": "^24.0.23",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^12.11.7",
     "babel-register": "^6.26.0",
@@ -52,11 +56,13 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.33",
+    "@types/jest": "^24.0.23",
     "@types/uuid": "^3.4.5",
     "@types/ws": "^6.0.3",
     "jest": "^23.5.0",
     "nodemon": "^1.19.2",
     "prettier": "1.18.2",
+    "ts-jest": "^24.2.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"
