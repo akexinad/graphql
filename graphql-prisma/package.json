@@ -26,7 +26,7 @@
     "ext": "ts, graphql"
   },
   "jest": {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default",
     "globals": {
       "ts-jest": {
         "globalSetup": "./tests/jestConfig/globalSetup.ts",
@@ -46,7 +46,6 @@
     "@types/node": "^12.11.7",
     "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
-    "concurrently": "^5.0.0",
     "env-cmd": "^10.0.1",
     "express": "^4.17.1",
     "graphql-cli": "^2.16.4",
@@ -59,7 +58,7 @@
     "@types/jest": "^24.0.23",
     "@types/uuid": "^3.4.5",
     "@types/ws": "^6.0.3",
-    "jest": "^23.5.0",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "prettier": "1.18.2",
     "ts-jest": "^24.2.0",
