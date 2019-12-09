@@ -11,7 +11,8 @@
         "no-console": [false],
         "no-shadowed-variable": false,
         "typedef": [true, "call-signature"],
-        "semicolon": [true, "always"]
+        "semicolon": [true, "always"],
+        "ordered-imports": [false]
     },
     "rulesDirectory": []
 }
